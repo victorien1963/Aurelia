@@ -7,6 +7,7 @@ function LoadingButton(props) {
   const [clicked, setclicked] = useState(false)
   return (
     <Button
+      size="sm"
       style={{ minWidth: '4rem', ...style }}
       variant={variant}
       className={className}
@@ -37,7 +38,7 @@ LoadingButton.propTypes = {
 
 LoadingButton.defaultProps = {
   style: {},
-  variant: 'outline-wom',
+  variant: 'outline-aure',
   btnText: '確 定',
   className: '',
   onClick: () => {},

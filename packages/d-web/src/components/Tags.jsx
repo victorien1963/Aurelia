@@ -43,12 +43,15 @@ function ShowModal({ setting }) {
       show={show}
       onHide={() => handleClose()}
       className="py-2 px-4"
+      size="xl"
     >
-      <Modal.Header closeButton />
+      <Modal.Header closeButton className="h5">
+        Preview
+      </Modal.Header>
       <Modal.Body className="p-4">
         <iframe
-          width="400"
-          height="400"
+          width="1200"
+          height="580"
           title="preview"
           srcDoc={`
           <header>${tag.setting?.code}</header>
@@ -56,7 +59,7 @@ function ShowModal({ setting }) {
         `}
         />
       </Modal.Body>
-      <Modal.Footer className="justify-content-center">
+      {/* <Modal.Footer className="justify-content-center">
         <Button
           className="ms-auto me-2"
           style={{ boxShadow: 'none' }}
@@ -68,12 +71,12 @@ function ShowModal({ setting }) {
         <Button
           className="me-auto"
           style={{ boxShadow: 'none' }}
-          variant="narwhal"
+          variant="aure"
           onClick={() => handleClose(true)}
         >
           確 認
         </Button>
-      </Modal.Footer>
+      </Modal.Footer> */}
     </Modal>
   )
 }
@@ -120,7 +123,7 @@ function DeleteModal({ setting }) {
         <Button
           className="me-auto"
           style={{ boxShadow: 'none' }}
-          variant="narwhal"
+          variant="aure"
           onClick={() => handleClose(true)}
         >
           確 認
@@ -149,7 +152,7 @@ function ProjectModal({ setting }) {
       onHide={() => handleClose()}
       className="py-2 px-4"
     >
-      <Modal.Header closeButton>
+      <Modal.Header closeButton className="h5">
         {defaultValue.setting ? `編輯預覽` : `新建預覽`}
       </Modal.Header>
       <Modal.Body className="p-4">
@@ -298,7 +301,7 @@ function ProjectModal({ setting }) {
         <Button
           className="me-auto"
           style={{ boxShadow: 'none' }}
-          variant="narwhal"
+          variant="aure"
           onClick={() => handleClose(true)}
         >
           確 認
@@ -338,14 +341,14 @@ function Tags() {
     },
     {
       name: 'id',
-      label: 'v0 ID',
-      placeholder: '輸入v0提供的ID',
+      label: 'V0 ID',
+      placeholder: '輸入V0提供的ID',
       type: 'tel',
     },
     {
       name: 'code',
-      label: 'v0 code',
-      placeholder: '輸入v0提供的代碼',
+      label: 'V0 code',
+      placeholder: '輸入V0提供的代碼',
       type: 'textarea',
     },
   ]
@@ -420,40 +423,13 @@ function Tags() {
   const [showTag, setshowTag] = useState(false)
   return (
     <Container className="d-flex flex-column pt-3 h-100">
-      <Row className="px-5">
-        <Col xs={2} className="d-flex">
-          <h5 className="my-auto text-chelonia-light fw-bold">v0管理</h5>
+      <Row style={{ paddingLeft: '1.5rem', paddingRight: '.75rem' }}>
+        <Col xs={2} className="d-flex ps-0">
+          <h4 className="my-auto text-aure-dark fw-bold">V0管理</h4>
         </Col>
-        <Col xs={2} />
-        <Col xs={3} className="d-flex justifu-content-end">
-          {/* <Form.Select
-            className="w-100 h-100"
-            aria-label="Default select example"
-            onChange={(e) => setselected(e.target.value)}
-            value={selected}
-          >
-            <option value="" className="d-none">
-              選擇素材類型
-            </option>
-            {(allowTypes.length
-              ? allowTypes.map(
-                  (t) =>
-                    ({
-                      ta: '轉場動畫',
-                      wm: '浮水印',
-                      clip: '影片',
-                      video: '影片',
-                    }[t])
-                )
-              : ['浮水印', '轉場動畫', '影片']
-            ).map((label, i) => (
-              <option key={i} value={label}>
-                {label}
-              </option>
-            ))}
-          </Form.Select> */}
-        </Col>
-        <Col xs={5} className="d-flex pe-0">
+        <Col xs={1} />
+        <Col xs={3} className="d-flex justifu-content-end" />
+        <Col xs={6} className="d-flex pe-0">
           <InputGroup>
             <Form.Control
               placeholder="輸入關鍵字以搜尋..."
@@ -483,33 +459,33 @@ function Tags() {
           </InputGroup>
           <Button
             className="ms-4 w-50"
-            variant="narwhal"
+            variant="outline-aure"
             onClick={() => {
               // setselectedId('')
               setshow(true)
             }}
           >
-            新增v0預覽&ensp;
+            新增V0預覽&ensp;
             <FontAwesomeIcon icon={faCirclePlus} />
           </Button>
           <Button
             className="ms-4 w-50"
-            variant="narwhal"
+            variant="outline-aure"
             onClick={() => {
               setContainerId('')
             }}
           >
-            回容器列表&ensp;
+            回專案列表&ensp;
             <FontAwesomeIcon icon={faReply} />
           </Button>
         </Col>
       </Row>
       <Row
-        className="flex-grow-1 pt-3 pb-5 px-5 h-100"
+        className="flex-grow-1 pt-3 pb-5 px-4 h-100"
         style={{ overflowY: 'auto', overflowX: 'hidden' }}
       >
         {tags && tags.length ? (
-          <ListGroup className="pe-0 h-100">
+          <ListGroup className="pe-0 h-100 w-100">
             {tags
               .filter(
                 ({ name, setting }) =>
@@ -583,8 +559,8 @@ function Tags() {
               ))}
           </ListGroup>
         ) : (
-          <div className="d-flex ps-3 border">
-            <h5 className="m-auto text-chelonia-light">目前尚無資料</h5>
+          <div className="d-flex ps-3">
+            <h5 className="m-auto text-secondary">目前尚無資料</h5>
           </div>
         )}
       </Row>

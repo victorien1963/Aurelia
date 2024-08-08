@@ -5,12 +5,11 @@
 import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
-// import moment from 'moment'
 import 'moment-timezone'
 import {
   Form,
   InputGroup,
-  // Image,
+  Image,
   Button,
   Modal,
   Container,
@@ -21,13 +20,10 @@ import {
   faEyeSlash,
   faCircleExclamation,
 } from '@fortawesome/free-solid-svg-icons'
-import {
-  AuthContext,
-  ToastContext,
-  // DraftContext,
-} from '../components/ContextProvider'
+import { AuthContext, ToastContext } from '../components/ContextProvider'
 import apiServices from '../services/apiServices'
 import { LoadingButton, ContainerAndPreview } from '../components'
+import logoFull from '../asset/images/logo-full.png'
 
 function Warn({ setting }) {
   const { size = 'md', show = false, handleClose } = setting
@@ -50,7 +46,7 @@ function Warn({ setting }) {
       <Modal.Body className="d-flex AccformCard">
         <div className="assPermis w-100">
           <Form className="px-2 Form-card flex-grow-1">
-            <Form.Group className="px-5 lh-md text-center text-wom">
+            <Form.Group className="px-5 lh-md text-center text-aure">
               <FontAwesomeIcon
                 icon={faCircleExclamation}
                 style={{ height: '5rem' }}
@@ -72,7 +68,7 @@ function Warn({ setting }) {
         <Button variant="secondary" onClick={() => handleClose(false)}>
           取消
         </Button>
-        <Button variant="wom" onClick={() => handleClose(show)}>
+        <Button variant="aure" onClick={() => handleClose(show)}>
           確定
         </Button>
       </Modal.Footer>
@@ -125,21 +121,21 @@ function Home() {
 
   return (
     <Container
-      className="bg-dots-light h-100 w-100 d-flex flex-column position-relative"
+      className="h-100 w-100 d-flex flex-column position-relative"
       style={{ overflowY: 'auto', overflowX: 'hidden' }}
       // onClick={() => setEditing('')}
     >
       {auth.authed ? (
         <ContainerAndPreview />
       ) : (
-        <>
-          {/* <div className="d-flex" style={{ height: '65%' }}>
+        <div className="h-100 w-100 bg-dots-light">
+          <div className="d-flex" style={{ height: '65%' }}>
             <Image
-              className="mt-auto mx-auto mb-5 h-50"
-              src={}
-              style={{ height: '25rem', width: 'auto' }}
+              className="mt-auto mx-auto"
+              src={logoFull}
+              style={{ height: 'auto', width: '19rem' }}
             />
-          </div> */}
+          </div>
           <div className="d-flex w-100 my-auto" style={{ height: '35%' }}>
             <Form className="py-3 px-5 mx-auto d-flex flex-column">
               {fields.map((field) => (
@@ -151,6 +147,7 @@ function Home() {
                       className="rounded input-group-transparent-addon w-100"
                     >
                       <Form.Control
+                        size="sm"
                         name={field.name}
                         type={reveal ? 'text' : field.type}
                         onChange={onDataChange}
@@ -176,6 +173,7 @@ function Home() {
                     </InputGroup>
                   ) : (
                     <Form.Control
+                      size="sm"
                       name={field.name}
                       type={field.type}
                       onChange={onDataChange}
@@ -186,9 +184,9 @@ function Home() {
               ))}
               <LoadingButton
                 className="mx-auto my-2"
-                variant="outline-wom"
+                variant="aure2"
                 onClick={handleLogin}
-                btnText="登入"
+                btnText="Login"
               />
               <div className="d-flex d-none">
                 <span
@@ -205,7 +203,7 @@ function Home() {
               </div>
             </Form>
           </div>
-        </>
+        </div>
       )}
       {/* <Warn
         setting={{

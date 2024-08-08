@@ -72,8 +72,8 @@ function Register() {
       <div className="d-flex" style={{ height: '65%' }}>
         <Image
           className="mt-auto mx-auto"
-          src=""
-          style={{ height: '25rem', width: 'auto' }}
+          src="logoFull"
+          style={{ height: 'auto', width: '19rem' }}
         />
       </div>
       <div className="d-flex w-100 mb-auto" style={{ height: '35%' }}>
@@ -122,7 +122,7 @@ function Register() {
           ))}
           <LoadingButton
             className="mx-auto my-2"
-            variant="outline-wom"
+            variant="outline-aure"
             onClick={handleLogin}
             disabled={
               !data.name || !data.confirm || !data.email || !data.password
@@ -139,7 +139,7 @@ function Register() {
               onClick={() => navigate('/')}
               aria-hidden
             >
-              登入
+              Login
             </span>
           </div>
         </Form>

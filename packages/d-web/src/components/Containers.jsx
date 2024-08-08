@@ -22,8 +22,8 @@ import {
   Modal,
   InputGroup,
   Container,
-  Tab,
-  Tabs,
+  // Tab,
+  // Tabs,
 } from 'react-bootstrap'
 import { Context } from './ContextProvider'
 
@@ -106,7 +106,7 @@ function DeleteModal({ setting }) {
           警告！刪除後無法復原！
           <br />
           仍要刪除
-          <span className="text-danger">{`「${name}」容器`}</span>
+          <span className="text-danger">{`「${name}」專案`}</span>
           嗎？
         </h5>
       </Modal.Body>
@@ -122,7 +122,7 @@ function DeleteModal({ setting }) {
         <Button
           className="me-auto"
           style={{ boxShadow: 'none' }}
-          variant="narwhal"
+          variant="aure"
           onClick={() => handleClose(true)}
         >
           確 認
@@ -151,8 +151,8 @@ function ProjectModal({ setting }) {
       onHide={() => handleClose()}
       className="py-2 px-4"
     >
-      <Modal.Header closeButton>
-        {defaultValue.setting ? `編輯標籤` : `新建標籤`}
+      <Modal.Header closeButton className="h5">
+        {defaultValue.setting ? `編輯專案` : `新建專案`}
       </Modal.Header>
       <Modal.Body className="p-4">
         {form.map((f, i) => {
@@ -281,7 +281,7 @@ function ProjectModal({ setting }) {
         <Button
           className="me-auto"
           style={{ boxShadow: 'none' }}
-          variant="narwhal"
+          variant="aure"
           onClick={() => handleClose(true)}
         >
           確 認
@@ -368,165 +368,131 @@ function Containers() {
 
   return (
     <Container className="d-flex flex-column pt-3 h-100">
-      <Tabs defaultActiveKey="management" className="mb-3">
-        {/* <Tab eventKey="report" title="IFRAME" className="h-100">
-          <IframeContainer />
-        </Tab> */}
-        <Tab eventKey="management" title="容器管理">
-          <Row className="px-5">
-            <Col xs={2} className="d-flex">
-              <h5 className="my-auto text-chelonia-light fw-bold">容器管理</h5>
-            </Col>
-            <Col xs={2} />
-            <Col xs={3} className="d-flex justifu-content-end">
-              {/* <Form.Select
-            className="w-100 h-100"
-            aria-label="Default select example"
-            onChange={(e) => setselected(e.target.value)}
-            value={selected}
-          >
-            <option value="" className="d-none">
-              選擇素材類型
-            </option>
-            {(allowTypes.length
-              ? allowTypes.map(
-                  (t) =>
-                    ({
-                      ta: '轉場動畫',
-                      wm: '浮水印',
-                      clip: '影片',
-                      video: '影片',
-                    }[t])
+      <Row style={{ paddingLeft: '1.5rem', paddingRight: '2.25rem' }}>
+        <Col xs={2} className="d-flex ps-0 my-auto">
+          <h4 className="text-aure-dark fw-bold">專案列表</h4>
+        </Col>
+        <Col xs={1} />
+        <Col xs={3} className="d-flex justifu-content-end" />
+        <Col xs={6} className="d-flex pe-0">
+          <InputGroup>
+            <Form.Control
+              placeholder="輸入關鍵字以搜尋專案..."
+              aria-label="Recipient's username"
+              aria-describedby="basic-addon2"
+              value={tempSearch}
+              onChange={(event) => setTempSearch(event.target.value)}
+              onFocus={() => setFocus(true)}
+              onBlur={() => setFocus(false)}
+              onKeyDown={(event) => {
+                if (
+                  event.key === 'Enter' &&
+                  !event.nativeEvent.isComposing &&
+                  focus
                 )
-              : ['浮水印', '轉場動畫', '影片']
-            ).map((label, i) => (
-              <option key={i} value={label}>
-                {label}
-              </option>
-            ))}
-          </Form.Select> */}
-            </Col>
-            <Col xs={5} className="d-flex pe-0">
-              <InputGroup>
-                <Form.Control
-                  placeholder="輸入關鍵字以搜尋容器..."
-                  aria-label="Recipient's username"
-                  aria-describedby="basic-addon2"
-                  value={tempSearch}
-                  onChange={(event) => setTempSearch(event.target.value)}
-                  onFocus={() => setFocus(true)}
-                  onBlur={() => setFocus(false)}
-                  onKeyDown={(event) => {
-                    if (
-                      event.key === 'Enter' &&
-                      !event.nativeEvent.isComposing &&
-                      focus
-                    )
-                      setSearch(tempSearch)
-                  }}
-                />
-                <Button
-                  variant="outline-dark"
-                  id="button-addon2"
-                  title="搜 尋"
-                  onClick={() => setSearch(tempSearch)}
-                >
-                  <FontAwesomeIcon icon={faSearch} />
-                </Button>
-              </InputGroup>
-              <Button
-                className="ms-4 w-50"
-                variant="narwhal"
-                onClick={() => {
-                  // setselectedId('')
-                  setshow(true)
-                }}
-              >
-                新增容器&ensp;
-                <FontAwesomeIcon icon={faCirclePlus} />
-              </Button>
-            </Col>
-          </Row>
-          <Row
-            className="flex-grow-1 pt-3 pb-5 px-5 h-100"
-            style={{ overflowY: 'auto', overflowX: 'hidden' }}
+                  setSearch(tempSearch)
+              }}
+            />
+            <Button
+              variant="outline-dark"
+              id="button-addon2"
+              title="搜 尋"
+              onClick={() => setSearch(tempSearch)}
+            >
+              <FontAwesomeIcon icon={faSearch} />
+            </Button>
+          </InputGroup>
+          <Button
+            className="ms-4 w-40"
+            variant="outline-aure"
+            onClick={() => {
+              // setselectedId('')
+              setshow(true)
+            }}
           >
-            {containers && containers.length ? (
-              <ListGroup className="pe-0 h-100">
-                {containers
-                  .filter(
-                    ({ name, setting }) =>
-                      !search ||
-                      (Object.keys(setting).some(
-                        (key) =>
-                          setting[key] &&
-                          `${setting[key]}`
-                            .toLowerCase()
-                            .includes(search.toLowerCase())
-                      ) &&
-                        (!search || name.includes(search)))
-                  )
-                  .map(({ name, container_id }) => (
-                    <ListGroupItem
-                      action
-                      onClick={() => setContainerId(container_id)}
-                      className="d-flex row"
-                      key={container_id}
+            建立新專案&ensp;
+            <FontAwesomeIcon icon={faCirclePlus} />
+          </Button>
+        </Col>
+      </Row>
+      <Row
+        className="flex-grow-1 pt-3 pb-5 px-4 h-100"
+        style={{ overflowY: 'auto', overflowX: 'hidden' }}
+      >
+        {containers && containers.length ? (
+          <ListGroup className="pe-0 h-100 w-100">
+            {containers
+              .filter(
+                ({ name, setting }) =>
+                  !search ||
+                  (Object.keys(setting).some(
+                    (key) =>
+                      setting[key] &&
+                      `${setting[key]}`
+                        .toLowerCase()
+                        .includes(search.toLowerCase())
+                  ) &&
+                    (!search || name.includes(search)))
+              )
+              .map(({ name, container_id }) => (
+                <ListGroupItem
+                  action
+                  onClick={() => setContainerId(container_id)}
+                  className="d-flex row"
+                  key={container_id}
+                >
+                  <Col
+                    xs={6}
+                    className="my-auto text-start oneLineEllipsis fs-7"
+                    title={name}
+                  >
+                    {name}
+                  </Col>
+                  <Col xs={3} className="my-auto text-start ps-2">
+                    <div className="fs-7 fw-regular text-chelonia">
+                      建立者｜
+                    </div>
+                    <div className="fs-7 fw-regular text-chelonia">
+                      建立時間｜
+                    </div>
+                  </Col>
+                  <Col xs={3} className="d-flex my-auto">
+                    <Button
+                      className="ms-auto"
+                      style={{ boxShadow: 'none' }}
+                      variant="edit"
+                      onClick={(e) => {
+                        setselectedId(container_id)
+                        setshowEdit(true)
+                        e.stopPropagation()
+                      }}
+                      title="重 新 命 名"
+                      size
                     >
-                      <Col
-                        xs={6}
-                        className="my-auto text-start oneLineEllipsis fs-7"
-                        title={name}
-                      >
-                        {name}
-                      </Col>
-                      <Col xs={3} className="my-auto text-start ps-2">
-                        <div className="fs-7 fw-regular text-chelonia">
-                          建立者｜
-                        </div>
-                        <div className="fs-7 fw-regular text-chelonia">
-                          建立時間｜
-                        </div>
-                      </Col>
-                      <Col xs={3} className="d-flex my-auto">
-                        <Button
-                          className="ms-auto"
-                          style={{ boxShadow: 'none' }}
-                          variant="edit"
-                          onClick={(e) => {
-                            setselectedId(container_id)
-                            setshowEdit(true)
-                            e.stopPropagation()
-                          }}
-                          title="重 新 命 名"
-                          size
-                        >
-                          <FontAwesomeIcon icon={faPenToSquare} />
-                        </Button>
-                        <Button
-                          style={{ boxShadow: 'none' }}
-                          variant="red"
-                          onClick={(e) => {
-                            setselectedId(container_id)
-                            setdeleteShow(true)
-                            e.stopPropagation()
-                          }}
-                          title="刪 除"
-                        >
-                          <FontAwesomeIcon icon={faTrashCan} />
-                        </Button>
-                      </Col>
-                    </ListGroupItem>
-                  ))}
-              </ListGroup>
-            ) : (
-              <div className="d-flex ps-3 border">
-                <h5 className="m-auto text-chelonia-light">目前尚無資料</h5>
-              </div>
-            )}
-          </Row>
-        </Tab>
-      </Tabs>
+                      <FontAwesomeIcon icon={faPenToSquare} />
+                    </Button>
+                    <Button
+                      style={{ boxShadow: 'none' }}
+                      variant="red"
+                      onClick={(e) => {
+                        setselectedId(container_id)
+                        setdeleteShow(true)
+                        e.stopPropagation()
+                      }}
+                      title="刪 除"
+                    >
+                      <FontAwesomeIcon icon={faTrashCan} />
+                    </Button>
+                  </Col>
+                </ListGroupItem>
+              ))}
+          </ListGroup>
+        ) : (
+          <div className="d-flex ps-3">
+            <h5 className="m-auto text-secondary">目前尚無資料</h5>
+          </div>
+        )}
+      </Row>
       <ProjectModal
         setting={{
           show,
@@ -557,10 +523,10 @@ function Containers() {
           show={showEdit}
           handleClose={() => setshowEdit(false)}
         >
-          <Modal.Header className="h5 text-chelonia">編輯容器</Modal.Header>
+          <Modal.Header className="h5 text-chelonia">編輯專案</Modal.Header>
           <Modal.Body className="p-4">
             <Form.Label className="mb-1 mt-3 fw-bold text-chelonia">
-              容器名稱
+              專案名稱
             </Form.Label>
 
             <Form.Control
@@ -587,7 +553,7 @@ function Containers() {
             <Button
               className="me-auto"
               style={{ boxShadow: 'none' }}
-              variant="narwhal"
+              variant="aure"
               onClick={() => {
                 setshowEdit(false)
                 handleEditContainer(selectedId, editData.name, {})

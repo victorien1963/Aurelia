@@ -36,7 +36,7 @@ function Searchbar(props) {
         }}
       />
       <Button
-        variant="outline-wom"
+        variant="outline-aure"
         id="button-addon2"
         title="搜 尋"
         onClick={() => {

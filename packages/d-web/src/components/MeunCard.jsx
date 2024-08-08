@@ -12,17 +12,17 @@ function MenuCard() {
         <div
           className="py-3"
           style={{
-            height: '150px',
+            height: '100px',
           }}
         >
           <Avatar />
         </div>
-        <Card.Title>{auth.name || 'VIP'}</Card.Title>
+        <Card.Title>{'user' || 'VIP'}</Card.Title>
         <Card.Title>{auth.email}</Card.Title>
       </Card.Body>
       {/* <Card.Footer className="d-flex justify-content-around">
         <Link to="/info" className="align-item-start">
-          <Button variant="outline-wom">修 改 密 碼</Button>
+          <Button variant="outline-aure">修 改 密 碼</Button>
         </Link>
       </Card.Footer> */}
     </Card>

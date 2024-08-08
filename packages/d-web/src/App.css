@@ -90,63 +90,92 @@
   cursor: pointer;
 }
 
-.text-wom-light {
+.text-aure-light {
   color: #a54210;
 }
 
-.text-wom-lighter {
+.text-aure-lighter {
   color: #ec611d;
 }
 
-.text-wom-white {
+.text-aure-white {
   color: #dd8357;
 }
 
-.text-wom {
-  color: rgb(49, 30, 21);
+.text-aure {
+  color: #2d348d;
 }
 
-.text-wom-dark {
-  color: #240e03;
+.text-aure-dark {
+  color: #0f1450;
 }
 
-.btn-wom {
-  background-color: #ec611d !important;
+.btn-aure {
+  background-color: #2d348d !important;
   color: #fff !important;
 }
 
-.btn-wom:hover, .btn-wom:active {
-  background-color: #1c0a02 !important;
+.btn-aure:hover, .btn-aure:active {
+  background-color: #1b1f5c !important;
   color: #fff !important;
 }
 
-.btn-hover-wom {
+.btn-hover-aure {
   background-color: transparent !important;
-  border: 0px solid #1c0a02 !important;
-  color: #1c0a02 !important;
+  border: 1px solid #2d348d !important;
+  color: #2d348d !important;
 }
 
-.btn-hover-wom:hover, .btn-outline-wom:active {
-  background-color: #ec611d !important;
-  border: 1px solid #ec611d !important;
+.btn-hover-aure:hover, .btn-outline-aure:active {
+  background-color: #22bedb !important;
+  border: 1px solid #22bedb !important;
   color: #fff !important;
 }
 
-.btn-outline-wom {
+.btn-aure2 {
+  background-image: linear-gradient(to left, #22bedb, #2d348d) !important;
+  font-weight: 500 !important;
+  border: none !important;
+  color: #fff !important;
+}
+
+.btn-aure2:hover, .btn-aure:active {
+  background-image: linear-gradient(to left, #15a3bc, #212673) !important;
+}
+
+.btn-outline-aure {
   background-color: transparent !important;
-  border: 1px solid #1c0a02 !important;
-  color: #1c0a02 !important;
+  border: 1px solid #2d348d !important;
+  color: #2d348d !important;
 }
 
-.btn-outline-wom:hover, .btn-outline-wom:active {
-  background-color: #ec611d !important;
-  border: 1px solid #ec611d !important;
+.btn-outline-aure:hover, .btn-outline-aure:active {
+  background-color: #2d348d !important;
+  border: 1px solid #2d348d !important;
   color: #fff !important;
 }
 
-.btn-outline-wom.active {
-  background-color: #ec611d !important;
-  border: 1px solid #ec611d !important;
+.btn-outline-aure.active {
+  background-color: #2d348d !important;
+  border: 1px solid #2d348d !important;
+  color: #fff !important;
+}
+
+.btn-outline-aure2 {
+  background-color: transparent !important;
+  border: 1px solid #2d348d !important;
+  color: #2d348d !important;
+}
+
+.btn-outline-aure2:hover, .btn-outline-aure2:active {
+  background-color: #22bedb !important;
+  border: 1px solid #22bedb !important;
+  color: #fff !important;
+}
+
+.btn-outline-aure2.active {
+  background-color: #22bedb !important;
+  border: 1px solid #22bedb !important;
   color: #fff !important;
 }
 
@@ -157,11 +186,11 @@
   padding: 0%;
 }
 
-.bg-wom {
+.bg-aure {
   background-color: #1c0a02 !important
 }
 
-.bg-wom-light {
+.bg-aure-light {
   background-color: #eff2fe !important
 }
 
@@ -177,7 +206,7 @@
 }
 
 .bg-dots-light {
-  /* background-image: url('./asset/images/bg-dots-light.png'); */
+  background-image: url('./asset/images/bg-dots-light.png');
   background-repeat: no-repeat;
   background-position: 50%;
   background-size: 280%;
@@ -366,6 +395,10 @@
   height: 90% !important;
 }
 
+.h-94 {
+  height: 94% !important;
+}
+
 .h-95 {
   height: 95% !important;
 }
@@ -390,6 +423,10 @@
   width: 35% !important;
 }
 
+.w-40 {
+  width: 40% !important;
+}
+
 .w-60 {
   width: 60% !important;
 }
@@ -410,7 +447,7 @@
   font-size: 0.8rem !important;
 }
 
-.border-table-wom > .row > * {
+.border-table-aure > .row > * {
   padding: 0rem;
   border: 1px solid rgb(99 35 35 / 5%);
 }
