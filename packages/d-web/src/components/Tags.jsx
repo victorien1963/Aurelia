@@ -26,6 +26,7 @@ import {
   Container,
 } from 'react-bootstrap'
 import { Context } from './ContextProvider'
+import IFrameContainer from './IFrameContainer'
 
 function ShowModal({ setting }) {
   const { show, tag, handleClose } = setting
@@ -48,16 +49,27 @@ function ShowModal({ setting }) {
       <Modal.Header closeButton className="h5">
         Preview
       </Modal.Header>
-      <Modal.Body className="p-4">
-        <iframe
+      <Modal.Body
+        className="p-4"
+        style={{
+          height: '75vh',
+        }}
+      >
+        <IFrameContainer
+          setting={{
+            id: tag.setting?.id,
+          }}
+        />
+        {/* <iframe
           width="1200"
           height="580"
           title="preview"
-          srcDoc={`
-          <header>${tag.setting?.code}</header>
-          <body style="height:400px;" />
-        `}
-        />
+          src={`https://generated.vusercontent.net/p/${tag.setting?.id}?flags=1&flags=1`}
+          //   srcDoc={`
+          //   <header>${tag.setting?.code}</header>
+          //   <body style="height:400px;" />
+          // `}
+        /> */}
       </Modal.Body>
       {/* <Modal.Footer className="justify-content-center">
         <Button
