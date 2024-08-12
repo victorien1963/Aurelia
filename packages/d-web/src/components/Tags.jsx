@@ -1,8 +1,9 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useState, useEffect, useContext } from 'react'
 import PropTypes from 'prop-types'
-// import moment from 'moment'
+import moment from 'moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCircleExclamation,
@@ -10,8 +11,10 @@ import {
   // faCopy,
   faEye,
   faPenToSquare,
+  faPlus,
   faReply,
   faSearch,
+  faTimes,
   faTrashCan,
 } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -19,12 +22,15 @@ import {
   Col,
   Button,
   ListGroup,
-  ListGroupItem,
+  // ListGroupItem,
   Form,
   Modal,
   InputGroup,
   Container,
+  Tabs,
+  Tab,
 } from 'react-bootstrap'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Context } from './ContextProvider'
 import IFrameContainer from './IFrameContainer'
 
@@ -343,6 +349,15 @@ function Tags() {
     handleDeleteTag,
   } = useContext(Context)
   // const { setToast } = useContext(ToastContext)
+  const [sortedTags, setsortedTags] = useState(tags)
+  useEffect(() => {
+    setsortedTags([
+      ...tags.filter(
+        ({ tag_id }) => !sortedTags.some((st) => st.tag_id === tag_id)
+      ),
+      ...sortedTags,
+    ])
+  }, [tags])
 
   const form = [
     {
@@ -432,7 +447,110 @@ function Tags() {
     )
   }, [selectedId])
 
+  const onDragEnd = (result) => {
+    if (!result.destination) {
+      return
+    }
+    const r = Array.from(sortedTags)
+    const [removed] = r.splice(result.source.index, 1)
+    r.splice(result.destination.index, 0, removed)
+    setsortedTags(r)
+  }
+
+  const grid = 8
+  const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: 'none',
+    padding: grid * 2,
+    margin: `0 0 ${grid}px 0`,
+    minWidth: isDragging ? '' : '32%',
+
+    // change background colour if dragging
+    // background: isDragging ? 'white' : 'white',
+
+    // styles we need to apply on draggables
+    ...draggableStyle,
+  })
+
+  const getListStyle = (isDraggingOver) => ({
+    background: isDraggingOver ? 'transparent' : 'transparent',
+    padding: grid,
+    width: '100%',
+    height: '270px',
+  })
+
+  // const [selected, setselected] = useState('')
+  const handleAddCode = () => {
+    setsortedTags(
+      sortedTags.map((st) =>
+        st.tag_id === selectedId
+          ? {
+              ...st,
+              setting: {
+                ...st.setting,
+                codes: st.setting.codes
+                  ? [
+                      ...st.setting.codes,
+                      {
+                        id: st.setting.codes.length,
+                        title: `components${st.setting.codes.length}.jsx`,
+                        code: '',
+                      },
+                    ]
+                  : [
+                      {
+                        id: 1,
+                        title: 'components.jsx',
+                        code: '',
+                      },
+                    ],
+              },
+            }
+          : st
+      )
+    )
+  }
+
+  const handleRemoveCode = (id) => {
+    setsortedTags(
+      sortedTags.map((st) =>
+        st.tag_id === selectedId
+          ? {
+              ...st,
+              setting: {
+                ...st.setting,
+                codes: st.setting.codes.filter((stsc) => stsc.id !== id),
+              },
+            }
+          : st
+      )
+    )
+  }
+
+  const handleChangeCode = (e, id) =>
+    setsortedTags(
+      sortedTags.map((st) =>
+        st.tag_id === selectedId
+          ? {
+              ...st,
+              setting: {
+                ...st.setting,
+                codes: (st.setting.codes || []).map((stsc) =>
+                  stsc.id === id
+                    ? {
+                        ...stsc,
+                        [e.target.name]: e.target.value,
+                      }
+                    : stsc
+                ),
+              },
+            }
+          : st
+      )
+    )
+
   const [showTag, setshowTag] = useState(false)
+
   return (
     <Container className="d-flex flex-column pt-3 h-100">
       <Row style={{ paddingLeft: '1.5rem', paddingRight: '.75rem' }}>
@@ -492,89 +610,220 @@ function Tags() {
           </Button>
         </Col>
       </Row>
-      <Row
-        className="flex-grow-1 pt-3 pb-5 px-4 h-100"
-        style={{ overflowY: 'auto', overflowX: 'hidden' }}
-      >
-        {tags && tags.length ? (
-          <ListGroup className="pe-0 h-100 w-100">
-            {tags
-              .filter(
-                ({ name, setting }) =>
-                  !search ||
-                  (Object.keys(setting).some(
-                    (key) =>
-                      setting[key] &&
-                      `${setting[key]}`
-                        .toLowerCase()
-                        .includes(search.toLowerCase())
-                  ) &&
-                    (!search || name.includes(search)))
-              )
-              .map(({ name, tag_id }) => (
-                <ListGroupItem className="d-flex row" key={tag_id}>
-                  <Col
-                    xs={3}
-                    className="my-auto text-start oneLineEllipsis fs-7"
-                    title={name}
+      <Row className="flex-grow-1 pt-3 pb-5 h-100">
+        <Col xs={4} style={{ overflowY: 'auto', overflowX: 'hidden' }}>
+          <DragDropContext onDragEnd={onDragEnd}>
+            {sortedTags && sortedTags.length ? (
+              <Droppable key={1} droppableId="1" direction="vertical">
+                {(dropProvided, dropSnapshot) => (
+                  <div
+                    {...dropProvided.droppableProps}
+                    ref={dropProvided.innerRef}
+                    style={getListStyle(dropSnapshot.isDraggingOver)}
+                    className="w-100 d-flex flex-nowrap"
                   >
-                    {name}
-                  </Col>
-                  <Col xs={6} className="my-auto text-start ps-2">
-                    <div className="fs-7 fw-regular text-chelonia">
-                      建立者｜
-                    </div>
-                    <div className="fs-7 fw-regular text-chelonia">
-                      建立時間｜
-                    </div>
-                  </Col>
-                  <Col xs={3} className="d-flex my-auto">
-                    <Button
-                      className="ms-auto"
-                      style={{ boxShadow: 'none' }}
-                      variant="edit"
-                      onClick={() => {
-                        setselectedId(tag_id)
-                        setshowTag(true)
-                      }}
-                      title="重 新 命 名"
-                      size
-                    >
-                      <FontAwesomeIcon icon={faEye} />
-                    </Button>
-                    <Button
-                      className="ms-auto"
-                      style={{ boxShadow: 'none' }}
-                      variant="edit"
-                      onClick={() => {
-                        setselectedId(tag_id)
-                        setshowEdit(true)
-                      }}
-                      title="重 新 命 名"
-                      size
-                    >
-                      <FontAwesomeIcon icon={faPenToSquare} />
-                    </Button>
-                    <Button
-                      style={{ boxShadow: 'none' }}
-                      variant="red"
-                      onClick={() => {
-                        setselectedId(tag_id)
-                        setdeleteShow(true)
-                      }}
-                      title="刪 除"
-                    >
-                      <FontAwesomeIcon icon={faTrashCan} />
-                    </Button>
-                  </Col>
-                </ListGroupItem>
+                    <ListGroup className="pe-0 h-100 w-100">
+                      {sortedTags
+                        .filter(
+                          ({ name, setting }) =>
+                            !search ||
+                            (Object.keys(setting).some(
+                              (key) =>
+                                setting[key] &&
+                                `${setting[key]}`
+                                  .toLowerCase()
+                                  .includes(search.toLowerCase())
+                            ) &&
+                              (!search || name.includes(search)))
+                        )
+                        .map(({ name, tag_id, ...t }, i) => (
+                          <Draggable
+                            key={`${tag_id}`}
+                            draggableId={`${tag_id}`}
+                            index={i}
+                          >
+                            {(dragProvided, dragSnapshot) => (
+                              <div
+                                ref={dragProvided.innerRef}
+                                {...dragProvided.draggableProps}
+                                {...dragProvided.dragHandleProps}
+                                // style={getItemStyle(
+                                //   dragSnapshot.isDragging,
+                                //   dragProvided.draggableProps.style
+                                // )}
+                                className="text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1"
+                                style={{
+                                  background: 'white',
+                                  border: '1px solid #ced4da',
+                                  borderRadius: '0.375rem',
+                                  minHeight: '250px',
+                                  maxHeight: '250px',
+                                  minWidth: '100%',
+                                  maxWidth: '100%',
+                                  width: '100%',
+                                  cursor: 'pointer',
+                                  ...getItemStyle(
+                                    dragSnapshot.isDragging,
+                                    dragProvided.draggableProps.style
+                                  ),
+                                  // className="position-absolute text-wom fs-7"
+                                  // top: `${5}%`,
+                                  // left: `${3 + i * 32}%`,
+                                  // height: '85%',
+                                  // width: '30%',
+                                }}
+                                onClick={() => setselectedId(tag_id)}
+                                aria-hidden
+                              >
+                                <Row
+                                  className="d-flex row w-100 h-25"
+                                  key={tag_id}
+                                >
+                                  <Col
+                                    xs={2}
+                                    className="my-auto text-start oneLineEllipsis fs-7"
+                                    title={name}
+                                  >
+                                    {name}
+                                  </Col>
+                                  <Col
+                                    xs={6}
+                                    className="my-auto text-start ps-2"
+                                  >
+                                    {/* <div className="fs-7 fw-regular text-chelonia">
+                                    建立者｜
+                                  </div> */}
+                                    <div className="fs-7 fw-regular text-chelonia text-nowrap">
+                                      建立時間｜
+                                      {moment(t.created_on).format(
+                                        'yyyy-MM-DD'
+                                      )}
+                                    </div>
+                                  </Col>
+                                  <Col xs={4} className="d-flex my-auto">
+                                    <Button
+                                      className="ms-auto"
+                                      style={{ boxShadow: 'none' }}
+                                      variant="edit"
+                                      onClick={() => {
+                                        setselectedId(tag_id)
+                                        setshowTag(true)
+                                      }}
+                                      title="重 新 命 名"
+                                      size
+                                    >
+                                      <FontAwesomeIcon icon={faEye} />
+                                    </Button>
+                                    <Button
+                                      className="ms-auto"
+                                      style={{ boxShadow: 'none' }}
+                                      variant="edit"
+                                      onClick={() => {
+                                        setselectedId(tag_id)
+                                        setshowEdit(true)
+                                      }}
+                                      title="重 新 命 名"
+                                      size
+                                    >
+                                      <FontAwesomeIcon icon={faPenToSquare} />
+                                    </Button>
+                                    <Button
+                                      style={{ boxShadow: 'none' }}
+                                      variant="red"
+                                      onClick={() => {
+                                        setselectedId(tag_id)
+                                        setdeleteShow(true)
+                                      }}
+                                      title="刪 除"
+                                    >
+                                      <FontAwesomeIcon icon={faTrashCan} />
+                                    </Button>
+                                  </Col>
+                                </Row>
+                                <Row className="h-75 w-100">
+                                  <IFrameContainer
+                                    setting={{
+                                      id: t.setting?.id,
+                                    }}
+                                  />
+                                </Row>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                    </ListGroup>
+                  </div>
+                )}
+              </Droppable>
+            ) : (
+              <div className="d-flex ps-3">
+                <h5 className="m-auto text-secondary">目前尚無資料</h5>
+              </div>
+            )}
+          </DragDropContext>
+        </Col>
+        <Col className="d-flex flex-column" xs={8}>
+          {selectedId ? (
+            <Tabs
+              defaultActiveKey={1}
+              className="d-flex flex-nowrap mb-1 overflow-auto"
+            >
+              {(
+                sortedTags.find((t) => t.tag_id === selectedId).setting.codes ||
+                []
+              ).map(({ id, title, code }) => (
+                <Tab
+                  eventKey={id}
+                  title={
+                    <Row>
+                      <Col xs={10}>
+                        <Form.Control
+                          size="sm"
+                          className="border-0 h-50 fs-6"
+                          name="title"
+                          value={title}
+                          onChange={(e) => handleChangeCode(e, id)}
+                        />
+                      </Col>
+                      <Col className="d-flex" xs={2}>
+                        <FontAwesomeIcon
+                          className="m-auto"
+                          icon={faTimes}
+                          title="新增"
+                          onClick={() => handleRemoveCode(id)}
+                        />
+                      </Col>
+                    </Row>
+                  }
+                  className="h-100 d-flex"
+                >
+                  <Form.Control
+                    className="h-100"
+                    as="textarea"
+                    name="code"
+                    rows={20}
+                    value={code}
+                    onChange={(e) => handleChangeCode(e, id)}
+                  />
+                </Tab>
               ))}
-          </ListGroup>
-        ) : (
-          <div className="d-flex ps-3">
-            <h5 className="m-auto text-secondary">目前尚無資料</h5>
-          </div>
-        )}
+              <Tab
+                title={
+                  <div className="d-flex h-100 w-100">
+                    <FontAwesomeIcon
+                      className="m-auto pt-2"
+                      icon={faPlus}
+                      title="新增"
+                      onClick={handleAddCode}
+                    />
+                  </div>
+                }
+              />
+            </Tabs>
+          ) : (
+            <h5 className="m-auto">尚未選擇頁面</h5>
+          )}
+        </Col>
       </Row>
       {show && (
         <ProjectModal
