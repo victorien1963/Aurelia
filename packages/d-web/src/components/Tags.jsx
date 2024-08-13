@@ -833,28 +833,33 @@ function Tags() {
             )}
           </DragDropContext>
         </Col>
-        <Col className="d-flex flex-column" xs={8}>
+        <Col className="d-flex flex-column h-100" xs={8}>
           {selectedId ? (
-            <Codes
+            // <Codes
+            //   setting={{
+            //     codes:
+            //       sortedTags.find((t) => t.tag_id === selectedId).setting
+            //         .codes || [],
+            //     setcodes: (codes) => {
+            //       setsortedTags(
+            //         sortedTags.map((st) =>
+            //           st.tag_id === selectedId
+            //             ? {
+            //                 ...st,
+            //                 setting: {
+            //                   ...st.setting,
+            //                   codes,
+            //                 },
+            //               }
+            //             : st
+            //         )
+            //       )
+            //     },
+            //   }}
+            // />
+            <IFrameContainer
               setting={{
-                codes:
-                  sortedTags.find((t) => t.tag_id === selectedId).setting
-                    .codes || [],
-                setcodes: (codes) => {
-                  setsortedTags(
-                    sortedTags.map((st) =>
-                      st.tag_id === selectedId
-                        ? {
-                            ...st,
-                            setting: {
-                              ...st.setting,
-                              codes,
-                            },
-                          }
-                        : st
-                    )
-                  )
-                },
+                id: sortedTags.find((t) => t.tag_id === selectedId).setting.id,
               }}
             />
           ) : (
