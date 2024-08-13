@@ -521,6 +521,25 @@
   height: 100%
 }
 
+.carousel-control-next, .carousel-control-prev {
+  color: #000 !important;
+  filter: invert(100%);
+}
+
+.carousel-inner {
+  height: 100%; 
+}
+
+.preview:hover {
+  border-color: #6fd5f5 !important;
+  border-width: 2px !important;
+}
+
+.preview.active {
+  border-color: #6fd5f5 !important;
+  border-width: 2px !important;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
