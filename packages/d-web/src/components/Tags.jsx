@@ -29,21 +29,149 @@ import {
   Container,
   Tabs,
   Tab,
+  Carousel,
 } from 'react-bootstrap'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Context } from './ContextProvider'
 import IFrameContainer from './IFrameContainer'
 
+function Codes({ setting }) {
+  const { codes = [], setcodes = () => {} } = setting
+  const handleAddCode = () => {
+    setcodes([
+      ...codes,
+      {
+        id: codes.length,
+        title: `components${codes.length}.jsx`,
+        code: '',
+      },
+    ])
+  }
+
+  const handleRemoveCode = (id) => {
+    setcodes(codes.filter((stsc) => stsc.id !== id))
+  }
+
+  const handleChangeCode = (e, id) => {
+    setcodes(
+      codes.map((stsc) =>
+        stsc.id === id
+          ? {
+              ...stsc,
+              [e.target.name]: e.target.value,
+            }
+          : stsc
+      )
+    )
+  }
+
+  return (
+    <div className="h-100 w-100">
+      <Tabs
+        defaultActiveKey={1}
+        className="d-flex flex-nowrap mb-1 overflow-auto"
+      >
+        {codes.map(({ id, title, code }) => (
+          <Tab
+            eventKey={id}
+            title={
+              <Row>
+                <Col xs={10}>
+                  <Form.Control
+                    size="sm"
+                    className="border-0 h-50 fs-6"
+                    name="title"
+                    value={title}
+                    onChange={(e) => handleChangeCode(e, id)}
+                  />
+                </Col>
+                <Col className="d-flex" xs={2}>
+                  <FontAwesomeIcon
+                    className="m-auto"
+                    icon={faTimes}
+                    title="新增"
+                    onClick={() => handleRemoveCode(id)}
+                  />
+                </Col>
+              </Row>
+            }
+            className="h-100 d-flex"
+          >
+            <Form.Control
+              className="h-100"
+              as="textarea"
+              name="code"
+              rows={20}
+              value={code}
+              onChange={(e) => handleChangeCode(e, id)}
+            />
+          </Tab>
+        ))}
+        <Tab
+          title={
+            <div className="d-flex h-100 w-100">
+              <FontAwesomeIcon
+                className="m-auto pt-2"
+                icon={faPlus}
+                title="新增"
+                onClick={handleAddCode}
+              />
+            </div>
+          }
+        />
+      </Tabs>
+    </div>
+  )
+}
+
+function SlideModal({ setting }) {
+  const { show, handleClose, previews } = setting
+  return (
+    <Modal
+      style={{ zIndex: '1501' }}
+      show={show}
+      onHide={() => handleClose()}
+      className="py-2 px-4"
+      size="xl"
+    >
+      <Modal.Header closeButton className="h5">
+        幻燈片模式
+      </Modal.Header>
+      <Modal.Body
+        className="p-4"
+        style={{
+          height: '75vh',
+        }}
+      >
+        <Carousel indicators={false} className="h-100">
+          {previews.map &&
+            previews.map((p, i) => (
+              <Carousel.Item
+                key={i}
+                className="h-100"
+                style={{
+                  color: '#000',
+                }}
+                // interval={interval}
+                // className="position-relative h-100"
+              >
+                <Carousel.Caption className="h-100">
+                  <IFrameContainer
+                    setting={{
+                      id: p.setting?.id,
+                    }}
+                  />
+                </Carousel.Caption>
+              </Carousel.Item>
+            ))}
+        </Carousel>
+      </Modal.Body>
+    </Modal>
+  )
+}
+
 function ShowModal({ setting }) {
   const { show, tag, handleClose } = setting
-  // useEffect(() => {
-  //   const script = document.createElement('script')
-  //   script.type = 'text/javascript'
-  //   script.appendChild(document.createTextNode(``))
-
-  //   const parent = document.head // or document.body;
-  //   parent.appendChild(script)
-  // })
   return (
     <Modal
       style={{ zIndex: '1501' }}
@@ -66,35 +194,7 @@ function ShowModal({ setting }) {
             id: tag.setting?.id,
           }}
         />
-        {/* <iframe
-          width="1200"
-          height="580"
-          title="preview"
-          src={`https://generated.vusercontent.net/p/${tag.setting?.id}?flags=1&flags=1`}
-          //   srcDoc={`
-          //   <header>${tag.setting?.code}</header>
-          //   <body style="height:400px;" />
-          // `}
-        /> */}
       </Modal.Body>
-      {/* <Modal.Footer className="justify-content-center">
-        <Button
-          className="ms-auto me-2"
-          style={{ boxShadow: 'none' }}
-          variant="secondary"
-          onClick={() => handleClose()}
-        >
-          取 消
-        </Button>
-        <Button
-          className="me-auto"
-          style={{ boxShadow: 'none' }}
-          variant="aure"
-          onClick={() => handleClose(true)}
-        >
-          確 認
-        </Button>
-      </Modal.Footer> */}
     </Modal>
   )
 }
@@ -166,6 +266,7 @@ function ProjectModal({ setting }) {
   return (
     <Modal
       style={{ zIndex: '1501' }}
+      size="lg"
       show={show}
       onHide={() => handleClose()}
       className="py-2 px-4"
@@ -173,9 +274,36 @@ function ProjectModal({ setting }) {
       <Modal.Header closeButton className="h5">
         {defaultValue.setting ? `編輯預覽` : `新建預覽`}
       </Modal.Header>
-      <Modal.Body className="p-4">
+      <Modal.Body
+        className="p-4 overflow-auto"
+        style={{
+          height: '65vh',
+        }}
+      >
         {form.map((f, i) => {
           switch (f.type) {
+            case 'code':
+              return (
+                <React.Fragment key={i}>
+                  <Form.Label className="mb-1 mt-3 fw-bold text-chelonia">
+                    {f.label}
+                  </Form.Label>
+
+                  <Codes
+                    setting={{
+                      codes: data.codes,
+                      setcodes: (codes) => {
+                        onDataChange({
+                          target: {
+                            name: 'codes',
+                            value: codes,
+                          },
+                        })
+                      },
+                    }}
+                  />
+                </React.Fragment>
+              )
             case 'date':
               return (
                 <React.Fragment key={i}>
@@ -373,10 +501,11 @@ function Tags() {
       type: 'tel',
     },
     {
-      name: 'code',
+      name: 'codes',
       label: 'V0 code',
       placeholder: '輸入V0提供的代碼',
-      type: 'textarea',
+      type: 'code',
+      default: [],
     },
   ]
 
@@ -390,7 +519,7 @@ function Tags() {
         form.reduce(
           (prev, cur) => ({
             ...prev,
-            [cur.name]: '',
+            [cur.name]: cur.default || '',
           }),
           {}
         )
@@ -479,77 +608,8 @@ function Tags() {
     height: '270px',
   })
 
-  // const [selected, setselected] = useState('')
-  const handleAddCode = () => {
-    setsortedTags(
-      sortedTags.map((st) =>
-        st.tag_id === selectedId
-          ? {
-              ...st,
-              setting: {
-                ...st.setting,
-                codes: st.setting.codes
-                  ? [
-                      ...st.setting.codes,
-                      {
-                        id: st.setting.codes.length,
-                        title: `components${st.setting.codes.length}.jsx`,
-                        code: '',
-                      },
-                    ]
-                  : [
-                      {
-                        id: 1,
-                        title: 'components.jsx',
-                        code: '',
-                      },
-                    ],
-              },
-            }
-          : st
-      )
-    )
-  }
-
-  const handleRemoveCode = (id) => {
-    setsortedTags(
-      sortedTags.map((st) =>
-        st.tag_id === selectedId
-          ? {
-              ...st,
-              setting: {
-                ...st.setting,
-                codes: st.setting.codes.filter((stsc) => stsc.id !== id),
-              },
-            }
-          : st
-      )
-    )
-  }
-
-  const handleChangeCode = (e, id) =>
-    setsortedTags(
-      sortedTags.map((st) =>
-        st.tag_id === selectedId
-          ? {
-              ...st,
-              setting: {
-                ...st.setting,
-                codes: (st.setting.codes || []).map((stsc) =>
-                  stsc.id === id
-                    ? {
-                        ...stsc,
-                        [e.target.name]: e.target.value,
-                      }
-                    : stsc
-                ),
-              },
-            }
-          : st
-      )
-    )
-
   const [showTag, setshowTag] = useState(false)
+  const [showSlide, setshowSlide] = useState(false)
 
   return (
     <Container className="d-flex flex-column pt-3 h-100">
@@ -558,8 +618,8 @@ function Tags() {
           <h4 className="my-auto text-aure-dark fw-bold">V0管理</h4>
         </Col>
         <Col xs={1} />
-        <Col xs={3} className="d-flex justifu-content-end" />
-        <Col xs={6} className="d-flex pe-0">
+        <Col xs={2} className="d-flex justifu-content-end" />
+        <Col xs={7} className="d-flex pe-0">
           <InputGroup>
             <Form.Control
               placeholder="輸入關鍵字以搜尋..."
@@ -608,6 +668,15 @@ function Tags() {
             回專案列表&ensp;
             <FontAwesomeIcon icon={faReply} />
           </Button>
+          <Button
+            className="ms-4 w-50"
+            variant="outline-aure"
+            onClick={() => {
+              setshowSlide(true)
+            }}
+          >
+            幻燈片模式
+          </Button>
         </Col>
       </Row>
       <Row className="flex-grow-1 pt-3 pb-5 h-100">
@@ -651,7 +720,9 @@ function Tags() {
                                 //   dragSnapshot.isDragging,
                                 //   dragProvided.draggableProps.style
                                 // )}
-                                className="text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1"
+                                className={`text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1 preview ${
+                                  tag_id === selectedId ? 'active' : ''
+                                }`}
                                 style={{
                                   background: 'white',
                                   border: '1px solid #ced4da',
@@ -764,62 +835,28 @@ function Tags() {
         </Col>
         <Col className="d-flex flex-column" xs={8}>
           {selectedId ? (
-            <Tabs
-              defaultActiveKey={1}
-              className="d-flex flex-nowrap mb-1 overflow-auto"
-            >
-              {(
-                sortedTags.find((t) => t.tag_id === selectedId).setting.codes ||
-                []
-              ).map(({ id, title, code }) => (
-                <Tab
-                  eventKey={id}
-                  title={
-                    <Row>
-                      <Col xs={10}>
-                        <Form.Control
-                          size="sm"
-                          className="border-0 h-50 fs-6"
-                          name="title"
-                          value={title}
-                          onChange={(e) => handleChangeCode(e, id)}
-                        />
-                      </Col>
-                      <Col className="d-flex" xs={2}>
-                        <FontAwesomeIcon
-                          className="m-auto"
-                          icon={faTimes}
-                          title="新增"
-                          onClick={() => handleRemoveCode(id)}
-                        />
-                      </Col>
-                    </Row>
-                  }
-                  className="h-100 d-flex"
-                >
-                  <Form.Control
-                    className="h-100"
-                    as="textarea"
-                    name="code"
-                    rows={20}
-                    value={code}
-                    onChange={(e) => handleChangeCode(e, id)}
-                  />
-                </Tab>
-              ))}
-              <Tab
-                title={
-                  <div className="d-flex h-100 w-100">
-                    <FontAwesomeIcon
-                      className="m-auto pt-2"
-                      icon={faPlus}
-                      title="新增"
-                      onClick={handleAddCode}
-                    />
-                  </div>
-                }
-              />
-            </Tabs>
+            <Codes
+              setting={{
+                codes:
+                  sortedTags.find((t) => t.tag_id === selectedId).setting
+                    .codes || [],
+                setcodes: (codes) => {
+                  setsortedTags(
+                    sortedTags.map((st) =>
+                      st.tag_id === selectedId
+                        ? {
+                            ...st,
+                            setting: {
+                              ...st.setting,
+                              codes,
+                            },
+                          }
+                        : st
+                    )
+                  )
+                },
+              }}
+            />
           ) : (
             <h5 className="m-auto">尚未選擇頁面</h5>
           )}
@@ -875,6 +912,15 @@ function Tags() {
           }}
         />
       )}
+      {showSlide && (
+        <SlideModal
+          setting={{
+            show: showSlide,
+            handleClose: () => setshowSlide(false),
+            previews: sortedTags,
+          }}
+        />
+      )}
     </Container>
   )
 }
@@ -888,6 +934,14 @@ DeleteModal.propTypes = {
 }
 
 ProjectModal.propTypes = {
+  setting: PropTypes.shape().isRequired,
+}
+
+SlideModal.propTypes = {
+  setting: PropTypes.shape().isRequired,
+}
+
+Codes.propTypes = {
   setting: PropTypes.shape().isRequired,
 }
 
