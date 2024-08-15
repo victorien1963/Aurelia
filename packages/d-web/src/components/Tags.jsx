@@ -103,6 +103,7 @@ function Codes({ setting }) {
               name="code"
               rows={20}
               value={code}
+              placeholder="請貼上v0提供的component.tsx程式碼，可使用v0介面上的複製功能"
               onChange={(e) => handleChangeCode(e, id)}
             />
           </Tab>
@@ -449,6 +450,7 @@ function ProjectModal({ setting }) {
           style={{ boxShadow: 'none' }}
           variant="aure"
           onClick={() => handleClose(true)}
+          disabled={Object.keys(data).some((key) => !data[key])}
         >
           確 認
         </Button>
@@ -503,7 +505,6 @@ function Tags() {
     {
       name: 'codes',
       label: 'V0 code',
-      placeholder: '輸入V0提供的代碼',
       type: 'code',
       default: [
         {
