@@ -1,4 +1,6 @@
 const express = require('express')
+const fs = require('fs')
+const path = require('path')
 const pg = require('../services/pgService')
 
 const router = express.Router()
@@ -18,7 +20,15 @@ router.post('/', async (req, res) => {
     const { user_id } = req.user
     const { name, container_id, setting } = req.body
     const tag = await pg.exec('one', 'INSERT INTO tags(name, setting, container_id, user_id, created_on) values($1, $2, $3, $4, current_timestamp)', [name, setting, container_id, user_id])
-    return res.send(tag)
+
+    // write file to next
+    const filePath = path.join(__dirname, `../public/v0/${setting.id}.tsx`)
+    console.log(filePath)
+    fs.appendFile(filePath, setting.codes[0].code, (result) => {
+        console.log(result)
+        return res.send(tag)
+    })
+    // return res.send(tag)
 })
 
 router.delete('/:tag_id', async (req, res) => {
