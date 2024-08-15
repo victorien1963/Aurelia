@@ -11,7 +11,7 @@ import {
   // faCopy,
   faEye,
   faPenToSquare,
-  faPlus,
+  // faPlus,
   faReply,
   faSearch,
   faTimes,
@@ -37,16 +37,16 @@ import IFrameContainer from './IFrameContainer'
 
 function Codes({ setting }) {
   const { codes = [], setcodes = () => {} } = setting
-  const handleAddCode = () => {
-    setcodes([
-      ...codes,
-      {
-        id: codes.length,
-        title: `components${codes.length}.jsx`,
-        code: '',
-      },
-    ])
-  }
+  // const handleAddCode = () => {
+  //   setcodes([
+  //     ...codes,
+  //     {
+  //       id: codes.length,
+  //       title: `components${codes.length}.jsx`,
+  //       code: '',
+  //     },
+  //   ])
+  // }
 
   const handleRemoveCode = (id) => {
     setcodes(codes.filter((stsc) => stsc.id !== id))
@@ -68,12 +68,12 @@ function Codes({ setting }) {
   return (
     <div className="h-100 w-100">
       <Tabs
-        defaultActiveKey={1}
+        defaultActiveKey={0}
         className="d-flex flex-nowrap mb-1 overflow-auto"
       >
-        {codes.map(({ id, title, code }) => (
+        {codes.map(({ id, title, code }, i) => (
           <Tab
-            eventKey={id}
+            eventKey={i}
             title={
               <Row>
                 <Col xs={10}>
@@ -107,7 +107,7 @@ function Codes({ setting }) {
             />
           </Tab>
         ))}
-        <Tab
+        {/* <Tab
           title={
             <div className="d-flex h-100 w-100">
               <FontAwesomeIcon
@@ -118,7 +118,7 @@ function Codes({ setting }) {
               />
             </div>
           }
-        />
+        /> */}
       </Tabs>
     </div>
   )
@@ -505,7 +505,13 @@ function Tags() {
       label: 'V0 code',
       placeholder: '輸入V0提供的代碼',
       type: 'code',
-      default: [],
+      default: [
+        {
+          title: 'component.tsx',
+          id: 0,
+          code: '',
+        },
+      ],
     },
   ]
 
