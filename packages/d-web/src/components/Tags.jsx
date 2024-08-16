@@ -813,7 +813,7 @@ function Tags() {
                                     </Button>
                                   </Col>
                                 </Row>
-                                <Row className="h-75 w-100">
+                                <Row className="h-75 w-100 overflow-hidden">
                                   <IFrameContainer
                                     setting={{
                                       id: t.setting?.id,

@@ -8,7 +8,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css'
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" style={{ overflowX: 'hidden' }}>
       <Router>
         <ContextProvider>
           <AppWrapper>
