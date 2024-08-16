@@ -9,7 +9,7 @@ import {
   faCircleExclamation,
   faCirclePlus,
   // faCopy,
-  faEye,
+  // faEye,
   faPenToSquare,
   faPlus,
   faReply,
@@ -680,7 +680,11 @@ function Tags() {
         </Col>
       </Row>
       <Row className="flex-grow-1 pt-3 pb-5 h-100">
-        <Col xs={4} style={{ overflowY: 'auto', overflowX: 'hidden' }}>
+        <Col
+          xs={4}
+          className="border rounded"
+          style={{ overflowY: 'auto', overflowX: 'hidden', marginTop: '8px' }}
+        >
           <DragDropContext onDragEnd={onDragEnd}>
             {sortedTags && sortedTags.length ? (
               <Droppable key={1} droppableId="1" direction="vertical">
@@ -746,19 +750,16 @@ function Tags() {
                                 onClick={() => setselectedId(tag_id)}
                                 aria-hidden
                               >
-                                <Row
-                                  className="d-flex row w-100 h-25"
-                                  key={tag_id}
-                                >
+                                <Row className="d-flex row h-25" key={tag_id}>
                                   <Col
-                                    xs={2}
+                                    xs={4}
                                     className="my-auto text-start oneLineEllipsis fs-7"
                                     title={name}
                                   >
                                     {name}
                                   </Col>
                                   <Col
-                                    xs={6}
+                                    xs={5}
                                     className="my-auto text-start ps-2"
                                   >
                                     {/* <div className="fs-7 fw-regular text-chelonia">
@@ -771,8 +772,8 @@ function Tags() {
                                       )}
                                     </div>
                                   </Col>
-                                  <Col xs={4} className="d-flex my-auto">
-                                    <Button
+                                  <Col xs={3} className="d-flex my-auto">
+                                    {/* <Button
                                       className="ms-auto"
                                       style={{ boxShadow: 'none' }}
                                       variant="edit"
@@ -784,7 +785,7 @@ function Tags() {
                                       size
                                     >
                                       <FontAwesomeIcon icon={faEye} />
-                                    </Button>
+                                    </Button> */}
                                     <Button
                                       className="ms-auto"
                                       style={{ boxShadow: 'none' }}
@@ -794,7 +795,7 @@ function Tags() {
                                         setshowEdit(true)
                                       }}
                                       title="重 新 命 名"
-                                      size
+                                      size="sm"
                                     >
                                       <FontAwesomeIcon icon={faPenToSquare} />
                                     </Button>
@@ -806,6 +807,7 @@ function Tags() {
                                         setdeleteShow(true)
                                       }}
                                       title="刪 除"
+                                      size="sm"
                                     >
                                       <FontAwesomeIcon icon={faTrashCan} />
                                     </Button>
@@ -827,13 +829,16 @@ function Tags() {
                 )}
               </Droppable>
             ) : (
-              <div className="d-flex ps-3">
+              <div className="d-flex ps-3 h-97">
                 <h5 className="m-auto text-secondary">目前尚無資料</h5>
               </div>
             )}
           </DragDropContext>
         </Col>
-        <Col className="d-flex flex-column h-100" xs={8}>
+        <Col
+          className="d-flex flex-column h-97 border rounded ms-2"
+          style={{ marginTop: '8px' }}
+        >
           {selectedId ? (
             // <Codes
             //   setting={{
@@ -863,7 +868,7 @@ function Tags() {
               }}
             />
           ) : (
-            <h5 className="m-auto">尚未選擇頁面</h5>
+            <h5 className="m-auto text-secondary">尚未選擇頁面</h5>
           )}
         </Col>
       </Row>
