@@ -888,7 +888,9 @@ function Tags() {
                                           ? t.setting.codes[0].code
                                           : ''
                                       }
+                                      as="textarea"
                                       placeholder="請輸入V0所生成的Code..."
+                                      rows={1}
                                       onChange={(e) =>
                                         setsortedTags(
                                           sortedTags.map((editing) =>
@@ -1135,6 +1137,8 @@ function Tags() {
                                                             >
                                                               <Form.Control
                                                                 className="border-0"
+                                                                as="textarea"
+                                                                rows={1}
                                                                 defaultValue={
                                                                   st.setting
                                                                     .codes &&
