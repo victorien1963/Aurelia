@@ -13,6 +13,14 @@ router.get('/:container_id', async (req, res) => {
 router.put('/:tag_id', async (req, res) => {
     const { name, setting } = req.body
     const tag = await pg.exec('one', 'UPDATE tags SET name = $1, setting = $2 WHERE tag_id = $3 RETURNING *', [name, setting, req.params.tag_id])
+    if (setting.codes && setting.codes[0] && setting.codes[0].code) {
+        const filePath = path.join(__dirname, `../public/v0/${setting.id}.tsx`)
+        console.log(filePath)
+        fs.writeFile(filePath, setting.codes[0].code, (result) => {
+            console.log(result)
+            return res.send(tag)
+        })
+    }
     if (setting.subtags) {
         setting.subtags.map(async (st) => {
             if (st.setting.id && st.setting.codes && st.setting.codes[0] && st.setting.codes[0].code) {
@@ -32,12 +40,14 @@ router.post('/', async (req, res) => {
     const tag = await pg.exec('one', 'INSERT INTO tags(name, setting, container_id, user_id, created_on) values($1, $2, $3, $4, current_timestamp)', [name, setting, container_id, user_id])
 
     // write file to next
-    const filePath = path.join(__dirname, `../public/v0/${setting.id}.tsx`)
-    console.log(filePath)
-    fs.writeFile(filePath, setting.codes[0].code, (result) => {
-        console.log(result)
-        return res.send(tag)
-    })
+    if (setting.codes && setting.codes[0] && setting.codes[0].code) {
+        const filePath = path.join(__dirname, `../public/v0/${setting.id}.tsx`)
+        console.log(filePath)
+        fs.writeFile(filePath, setting.codes[0].code, (result) => {
+            console.log(result)
+            return res.send(tag)
+        })
+    }
     // return res.send(tag)
 })
 

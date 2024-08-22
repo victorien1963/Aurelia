@@ -781,8 +781,10 @@ function Tags() {
                                 //   dragSnapshot.isDragging,
                                 //   dragProvided.draggableProps.style
                                 // )}
-                                className={`text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1 preview border-0 ${
-                                  tag_id === selectedId ? 'active' : ''
+                                className={`text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1 preview border-0 list ${
+                                  selectedId.split('_')[0] === `${tag_id}`
+                                    ? 'active'
+                                    : ''
                                 }`}
                                 style={{
                                   background: 'white',
@@ -871,7 +873,7 @@ function Tags() {
                                       // className="border-0"
                                       defaultValue={
                                         t.setting.codes && t.setting.codes[0]
-                                          ? t.setting.codes[0]
+                                          ? t.setting.codes[0].code
                                           : ''
                                       }
                                       placeholder="請輸入V0所生成的Code..."
@@ -883,7 +885,11 @@ function Tags() {
                                                   ...editing,
                                                   setting: {
                                                     ...editing.setting,
-                                                    codes: [e.target.value],
+                                                    codes: [
+                                                      {
+                                                        code: e.target.value,
+                                                      },
+                                                    ],
                                                   },
                                                 }
                                               : editing
@@ -963,14 +969,14 @@ function Tags() {
                                                           //   dragSnapshot.isDragging,
                                                           //   dragProvided.draggableProps.style
                                                           // )}
-                                                          className={`text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1 preview border-0 ${
+                                                          className={`text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1 border-0 ${
                                                             tag_id ===
                                                             selectedId
                                                               ? 'active'
                                                               : ''
                                                           }`}
                                                           style={{
-                                                            background: 'white',
+                                                            // background: 'white',
                                                             border:
                                                               '1px solid #ced4da',
                                                             borderRadius:
@@ -1124,6 +1130,7 @@ function Tags() {
                                                                     .codes[0]
                                                                     ? st.setting
                                                                         .codes[0]
+                                                                        .code
                                                                     : ''
                                                                 }
                                                                 placeholder="請輸入V0所生成的Code..."
@@ -1213,21 +1220,6 @@ function Tags() {
                                         </Row>
                                       )}
                                     </DragDropContext>
-                                    <Row className="px-5">
-                                      <Button
-                                        className="ms-4"
-                                        style={{
-                                          width: '95%',
-                                        }}
-                                        variant="outline-aure"
-                                        onClick={() => {
-                                          handleAddSubTag(tag_id, '新分頁', {})
-                                        }}
-                                      >
-                                        {/* 新增V0預覽&ensp; */}
-                                        <FontAwesomeIcon icon={faCirclePlus} />
-                                      </Button>
-                                    </Row>
                                   </Row>
                                 )}
                                 {/* <Row className="h-75 w-100 overflow-hidden">
@@ -1257,7 +1249,11 @@ function Tags() {
                 variant="outline-aure"
                 onClick={() => {
                   // setselectedId('')
-                  setshow(true)
+                  // setshow(true)
+                  handleAddTag('點擊這裡修改名稱', {
+                    id: '',
+                    codes: [],
+                  })
                 }}
               >
                 {/* 新增V0預覽&ensp; */}
