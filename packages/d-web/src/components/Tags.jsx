@@ -486,14 +486,13 @@ function Tags() {
   } = useContext(Context)
   // const { setToast } = useContext(ToastContext)
   const [sortedTags, setsortedTags] = useState(tags)
-  console.log(tags)
   useEffect(() => {
     setsortedTags([
-      ...tags.filter(
-        ({ tag_id }) => !sortedTags.some((st) => st.tag_id === tag_id)
-      ),
       ...sortedTags.map((st) =>
         tags.find(({ tag_id }) => tag_id === st.tag_id)
+      ),
+      ...tags.filter(
+        ({ tag_id }) => !sortedTags.some((st) => st.tag_id === tag_id)
       ),
     ])
   }, [tags])
