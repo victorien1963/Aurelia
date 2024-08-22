@@ -473,7 +473,9 @@ function Tags() {
   //   const { auth } = useContext(AuthContext)
   const {
     tags,
-    // containerId,
+    container,
+    handleEditContainer,
+    containerId,
     setContainerId,
     handleAddTag,
     handleEditTag,
@@ -642,24 +644,33 @@ function Tags() {
   return (
     <Container className="d-flex flex-column pt-3 h-100">
       <Row style={{ paddingLeft: '1.5rem', paddingRight: '.75rem' }}>
-        <Col xs={2} className="d-flex ps-0">
-          <h4 className="my-auto text-aure-dark fw-bold">架構管理 / 後台</h4>
-        </Col>
         {showSlide ? (
-          <Col xs={4} className="d-flex pe-0 ms-auto">
-            <Button
-              className="ms-auto"
-              variant="outline-aure"
-              onClick={() => {
-                setshowSlide(false)
-              }}
-            >
-              返回專案管理&ensp;
-              <FontAwesomeIcon icon={faReply} />
-            </Button>
-          </Col>
+          <>
+            <Col xs={2} className="d-flex ps-0">
+              <h4 className="my-auto text-aure-dark fw-bold">
+                {container.name}
+              </h4>
+            </Col>
+            <Col xs={4} className="d-flex pe-0 ms-auto">
+              <Button
+                className="ms-auto"
+                variant="outline-aure"
+                onClick={() => {
+                  setshowSlide(false)
+                }}
+              >
+                返回專案管理&ensp;
+                <FontAwesomeIcon icon={faReply} />
+              </Button>
+            </Col>
+          </>
         ) : (
           <>
+            <Col xs={2} className="d-flex ps-0">
+              <h4 className="my-auto text-aure-dark fw-bold">
+                架構管理 / 後台
+              </h4>
+            </Col>
             <Col xs={1} className="d-flex ps-0">
               <h5 className="my-auto text-aure-dark fw-bold text-nowrap">
                 系統名稱
@@ -667,12 +678,14 @@ function Tags() {
             </Col>
             <Col xs={2} className="d-flex ps-0">
               <Form.Control
+                defaultValue={container.name}
                 placeholder="請輸入系統名稱..."
-                onChange={(e) => {
-                  console.log(e)
-                }}
                 onBlur={(e) => {
-                  console.log(e)
+                  handleEditContainer(
+                    containerId,
+                    e.target.value,
+                    container.setting
+                  )
                 }}
               />
             </Col>
