@@ -1178,9 +1178,11 @@ function Tags() {
                                                                                                   ...estst.setting,
                                                                                                   codes:
                                                                                                     [
-                                                                                                      e
-                                                                                                        .target
-                                                                                                        .value,
+                                                                                                      {
+                                                                                                        code: e
+                                                                                                          .target
+                                                                                                          .value,
+                                                                                                      },
                                                                                                     ],
                                                                                                 },
                                                                                             }
