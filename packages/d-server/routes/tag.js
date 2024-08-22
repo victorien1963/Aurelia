@@ -46,6 +46,8 @@ router.post('/', async (req, res) => {
             console.log(result)
             return res.send(tag)
         })
+    } else {
+        return res.send(tag)
     }
     // return res.send(tag)
 })
