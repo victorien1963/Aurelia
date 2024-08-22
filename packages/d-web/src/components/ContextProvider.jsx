@@ -150,6 +150,74 @@ function ContextProvider(props) {
     getTags()
   }
 
+  const handleAddSubTag = async (tag_id, name, setting) => {
+    const target = tags.find((tag) => tag.tag_id === tag_id)
+    const res = await apiServices.data({
+      path: `tag/${tag_id}`,
+      method: 'put',
+      data: {
+        name: target.name,
+        setting: {
+          ...target.setting,
+          subtags: [
+            ...(target.setting.subtags || []),
+            {
+              name,
+              setting,
+            },
+          ],
+        },
+      },
+    })
+    console.log('---edit tag---')
+    console.log(res)
+    getTags()
+  }
+
+  const handleEditSubTag = async (tag_id, index, name, setting) => {
+    const target = tags.find((tag) => tag.tag_id === tag_id)
+    const res = await apiServices.data({
+      path: `tag/${tag_id}`,
+      method: 'put',
+      data: {
+        name: target.name,
+        setting: {
+          ...target.setting,
+          subtags: target.setting.subtags.map((st, i) =>
+            i === index
+              ? {
+                  ...st,
+                  name,
+                  setting,
+                }
+              : st
+          ),
+        },
+      },
+    })
+    console.log('---edit tag---')
+    console.log(res)
+    getTags()
+  }
+
+  const handleDeleteSubTag = async (tag_id, index) => {
+    const target = tags.find((tag) => tag.tag_id === tag_id)
+    const res = await apiServices.data({
+      path: `tag/${tag_id}`,
+      method: 'put',
+      data: {
+        name: target.name,
+        setting: {
+          ...target.setting,
+          subtags: target.setting.subtags.filter((st, i) => i !== index),
+        },
+      },
+    })
+    console.log('---edit tag---')
+    console.log(res)
+    getTags()
+  }
+
   const handleDeleteTag = async (id) => {
     const res = await apiServices.data({
       path: `tag/${id}`,
@@ -181,6 +249,9 @@ function ContextProvider(props) {
       handleAddTag,
       handleEditTag,
       handleDeleteTag,
+      handleAddSubTag,
+      handleEditSubTag,
+      handleDeleteSubTag,
     }),
     [containers, containerId, container, tags]
   )
