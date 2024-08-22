@@ -552,12 +552,20 @@
   border-width: 2px !important;
 }
 
-.index:active {
-  background-color: #70D5F4 !important;
+.index:hover {
+  background-color: #CCF3FF !important;
 }
 
 .index.active {
-  background-color: #70D5F4 !important;
+  background-color: #CCF3FF !important;
+}
+
+.list:hover {
+  background-color: #F3F3F3 !important;
+}
+
+.list.active {
+  background-color: #F3F3F3 !important;
 }
 
 @keyframes App-logo-spin {
