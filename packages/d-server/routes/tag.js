@@ -18,7 +18,6 @@ router.put('/:tag_id', async (req, res) => {
         console.log(filePath)
         fs.writeFile(filePath, setting.codes[0].code, (result) => {
             console.log(result)
-            return res.send(tag)
         })
     }
     if (setting.subtags) {
