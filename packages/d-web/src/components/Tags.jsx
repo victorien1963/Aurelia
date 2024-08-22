@@ -1,21 +1,22 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
+// import moment from 'moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faBars,
   faCircleExclamation,
   faCirclePlus,
   // faCopy,
   // faEye,
-  faPenToSquare,
+  // faPenToSquare,
   // faPlus,
   faReply,
-  faSearch,
+  // faSearch,
   faTimes,
-  faTrashCan,
+  // faTrashCan,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   Row,
@@ -477,15 +478,21 @@ function Tags() {
     handleAddTag,
     handleEditTag,
     handleDeleteTag,
+    handleAddSubTag,
+    // handleEditSubTag,
+    // handleDeleteSubTag,
   } = useContext(Context)
   // const { setToast } = useContext(ToastContext)
   const [sortedTags, setsortedTags] = useState(tags)
+  console.log(tags)
   useEffect(() => {
     setsortedTags([
       ...tags.filter(
         ({ tag_id }) => !sortedTags.some((st) => st.tag_id === tag_id)
       ),
-      ...sortedTags,
+      ...sortedTags.map((st) =>
+        tags.find(({ tag_id }) => tag_id === st.tag_id)
+      ),
     ])
   }, [tags])
 
@@ -549,10 +556,6 @@ function Tags() {
     }
   }
 
-  const [tempSearch, setTempSearch] = useState('')
-  const [search, setSearch] = useState('')
-  const [focus, setFocus] = useState(false)
-
   const [showEdit, setshowEdit] = useState(false)
   const [editData, seteditData] = useState({})
   const onEditDataChange = (e) =>
@@ -584,6 +587,7 @@ function Tags() {
   }, [selectedId])
 
   const onDragEnd = (result) => {
+    console.log(result)
     if (!result.destination) {
       return
     }
@@ -612,111 +616,157 @@ function Tags() {
     background: isDraggingOver ? 'transparent' : 'transparent',
     padding: grid,
     width: '100%',
-    height: '270px',
+    // height: '270px',
   })
 
   const [showTag, setshowTag] = useState(false)
   const [showSlide, setshowSlide] = useState(false)
 
+  const iframeId = useMemo(() => {
+    if (!selectedId) return ''
+    if (selectedId.includes('_')) {
+      const [tag_id, index] = selectedId.split('_')
+      const target = sortedTags.find((t) => `${t.tag_id}` === tag_id)
+      return target.setting.subtags[index].setting.id
+    }
+    return sortedTags.find((t) => `${t.tag_id}` === selectedId).setting.id
+  }, [selectedId])
+
+  const handleBlur = (tag_id) => {
+    const target = sortedTags.find((t) => t.tag_id === tag_id)
+    handleEditTag(tag_id, target.name, {
+      ...target.setting,
+    })
+  }
+
   return (
     <Container className="d-flex flex-column pt-3 h-100">
       <Row style={{ paddingLeft: '1.5rem', paddingRight: '.75rem' }}>
         <Col xs={2} className="d-flex ps-0">
-          <h4 className="my-auto text-aure-dark fw-bold">V0管理</h4>
+          <h4 className="my-auto text-aure-dark fw-bold">架構管理 / 後台</h4>
         </Col>
-        <Col xs={1} />
-        <Col xs={2} className="d-flex justifu-content-end" />
-        <Col xs={7} className="d-flex pe-0">
-          <InputGroup>
-            <Form.Control
-              placeholder="輸入關鍵字以搜尋..."
-              aria-label="Recipient's username"
-              aria-describedby="basic-addon2"
-              value={tempSearch}
-              onChange={(event) => setTempSearch(event.target.value)}
-              onFocus={() => setFocus(true)}
-              onBlur={() => setFocus(false)}
-              onKeyDown={(event) => {
-                if (
-                  event.key === 'Enter' &&
-                  !event.nativeEvent.isComposing &&
-                  focus
-                )
-                  setSearch(tempSearch)
-              }}
-            />
+        {showSlide ? (
+          <Col xs={4} className="d-flex pe-0 ms-auto">
             <Button
-              variant="outline-dark"
-              id="button-addon2"
-              title="搜 尋"
-              onClick={() => setSearch(tempSearch)}
+              className="ms-auto"
+              variant="outline-aure"
+              onClick={() => {
+                setshowSlide(false)
+              }}
             >
-              <FontAwesomeIcon icon={faSearch} />
+              返回專案管理&ensp;
+              <FontAwesomeIcon icon={faReply} />
             </Button>
-          </InputGroup>
-          <Button
-            className="ms-4 w-50"
-            variant="outline-aure"
-            onClick={() => {
-              // setselectedId('')
-              setshow(true)
-            }}
-          >
-            新增V0預覽&ensp;
-            <FontAwesomeIcon icon={faCirclePlus} />
-          </Button>
-          <Button
-            className="ms-4 w-50"
-            variant="outline-aure"
-            onClick={() => {
-              setContainerId('')
-            }}
-          >
-            回專案列表&ensp;
-            <FontAwesomeIcon icon={faReply} />
-          </Button>
-          <Button
-            className="ms-4 w-50"
-            variant="outline-aure"
-            onClick={() => {
-              setshowSlide(true)
-            }}
-          >
-            幻燈片模式
-          </Button>
-        </Col>
+          </Col>
+        ) : (
+          <>
+            <Col xs={1} className="d-flex ps-0">
+              <h5 className="my-auto text-aure-dark fw-bold text-nowrap">
+                系統名稱
+              </h5>
+            </Col>
+            <Col xs={2} className="d-flex ps-0">
+              <Form.Control
+                placeholder="請輸入系統名稱..."
+                onChange={(e) => {
+                  console.log(e)
+                }}
+                onBlur={(e) => {
+                  console.log(e)
+                }}
+              />
+            </Col>
+            <Col xs={4} className="d-flex pe-0 ms-auto">
+              <Button
+                className="ms-4 w-50"
+                variant="outline-aure"
+                onClick={() => {
+                  setContainerId('')
+                }}
+              >
+                回專案列表&ensp;
+                <FontAwesomeIcon icon={faReply} />
+              </Button>
+              <Button
+                className="ms-4 w-50"
+                variant="outline-aure"
+                onClick={() => {
+                  setshowSlide(true)
+                }}
+              >
+                幻燈片模式
+              </Button>
+            </Col>
+          </>
+        )}
       </Row>
       <Row className="flex-grow-1 pt-3 pb-5 h-100">
         <Col
-          xs={4}
-          className="border rounded"
+          xs={2}
+          className="border-end pe-5"
           style={{ overflowY: 'auto', overflowX: 'hidden', marginTop: '8px' }}
         >
-          <DragDropContext onDragEnd={onDragEnd}>
-            {sortedTags && sortedTags.length ? (
-              <Droppable key={1} droppableId="1" direction="vertical">
-                {(dropProvided, dropSnapshot) => (
-                  <div
-                    {...dropProvided.droppableProps}
-                    ref={dropProvided.innerRef}
-                    style={getListStyle(dropSnapshot.isDraggingOver)}
-                    className="w-100 d-flex flex-nowrap"
+          {sortedTags && sortedTags.length ? (
+            <ListGroup className="pe-0 h-100 w-100">
+              {sortedTags.map(({ name, tag_id, ...t }) => (
+                <>
+                  <Row
+                    className={`d-flex index row py-2 rounded ${
+                      selectedId === `${tag_id}` ? 'active' : ''
+                    }`}
+                    key={tag_id}
+                    onClick={() => setselectedId(`${tag_id}`)}
                   >
-                    <ListGroup className="pe-0 h-100 w-100">
-                      {sortedTags
-                        .filter(
-                          ({ name, setting }) =>
-                            !search ||
-                            (Object.keys(setting).some(
-                              (key) =>
-                                setting[key] &&
-                                `${setting[key]}`
-                                  .toLowerCase()
-                                  .includes(search.toLowerCase())
-                            ) &&
-                              (!search || name.includes(search)))
-                        )
-                        .map(({ name, tag_id, ...t }, i) => (
+                    <h5
+                      className="my-auto text-start oneLineEllipsis fs-7"
+                      title={name}
+                    >
+                      {name}
+                    </h5>
+                  </Row>
+                  {t.setting.subtags &&
+                    t.setting.subtags.map((st, i) => (
+                      <Row
+                        className={`index d-flex row py-2 ps-5 rounded ${
+                          selectedId === `${tag_id}_${i}` ? 'active' : ''
+                        }`}
+                        key={`${tag_id}_${i}`}
+                        onClick={() => setselectedId(`${tag_id}_${i}`)}
+                      >
+                        <h5
+                          className="my-auto text-start oneLineEllipsis fs-7"
+                          title={st.name}
+                        >
+                          {st.name}
+                        </h5>
+                      </Row>
+                    ))}
+                </>
+              ))}
+            </ListGroup>
+          ) : (
+            <div className="d-flex ps-3 h-97">
+              <h5 className="m-auto text-secondary">目前尚無資料</h5>
+            </div>
+          )}
+        </Col>
+        {!showSlide ? (
+          <Col
+            className="ms-2"
+            style={{ overflowY: 'auto', overflowX: 'hidden', marginTop: '8px' }}
+          >
+            <DragDropContext onDragEnd={onDragEnd}>
+              {sortedTags && sortedTags.length ? (
+                <Droppable key={1} droppableId="1" direction="vertical">
+                  {(dropProvided, dropSnapshot) => (
+                    <div
+                      {...dropProvided.droppableProps}
+                      ref={dropProvided.innerRef}
+                      style={getListStyle(dropSnapshot.isDraggingOver)}
+                      className="w-100 d-flex flex-nowrap"
+                    >
+                      <ListGroup className="pe-0 w-100">
+                        {sortedTags.map(({ name, tag_id, ...t }, i) => (
                           <Draggable
                             key={`${tag_id}`}
                             draggableId={`${tag_id}`}
@@ -726,20 +776,20 @@ function Tags() {
                               <div
                                 ref={dragProvided.innerRef}
                                 {...dragProvided.draggableProps}
-                                {...dragProvided.dragHandleProps}
+                                // {...dragProvided.dragHandleProps}
                                 // style={getItemStyle(
                                 //   dragSnapshot.isDragging,
                                 //   dragProvided.draggableProps.style
                                 // )}
-                                className={`text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1 preview ${
+                                className={`text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1 preview border-0 ${
                                   tag_id === selectedId ? 'active' : ''
                                 }`}
                                 style={{
                                   background: 'white',
                                   border: '1px solid #ced4da',
                                   borderRadius: '0.375rem',
-                                  minHeight: '250px',
-                                  maxHeight: '250px',
+                                  // minHeight: '100px',
+                                  // maxHeight: '100px',
                                   minWidth: '100%',
                                   maxWidth: '100%',
                                   width: '100%',
@@ -754,130 +804,483 @@ function Tags() {
                                   // height: '85%',
                                   // width: '30%',
                                 }}
-                                onClick={() => setselectedId(tag_id)}
+                                onClick={() => setselectedId(`${tag_id}`)}
                                 aria-hidden
                               >
-                                <Row className="d-flex row h-25" key={tag_id}>
+                                <Row className="d-flex row" key={tag_id}>
                                   <Col
-                                    xs={4}
+                                    xs={2}
                                     className="my-auto text-start oneLineEllipsis fs-7"
                                     title={name}
                                   >
-                                    {name}
+                                    <Form.Control
+                                      className="border-0"
+                                      defaultValue={name}
+                                      onChange={(e) =>
+                                        setsortedTags(
+                                          sortedTags.map((editing) =>
+                                            editing.tag_id === tag_id
+                                              ? {
+                                                  ...editing,
+                                                  name: e.target.value,
+                                                }
+                                              : editing
+                                          )
+                                        )
+                                      }
+                                      onBlur={() => {
+                                        handleBlur(tag_id)
+                                      }}
+                                    />
                                   </Col>
                                   <Col
-                                    xs={5}
-                                    className="my-auto text-start ps-2"
+                                    xs={2}
+                                    className="my-auto text-start oneLineEllipsis fs-7"
+                                    title={name}
                                   >
-                                    {/* <div className="fs-7 fw-regular text-chelonia">
-                                    建立者｜
-                                  </div> */}
-                                    <div className="fs-7 fw-regular text-chelonia text-nowrap">
-                                      建立時間｜
-                                      {moment(t.created_on).format(
-                                        'yyyy-MM-DD'
+                                    <Form.Control
+                                      // className="border-0"
+                                      defaultValue={t.setting.id || ''}
+                                      placeholder="請輸入ID..."
+                                      onChange={(e) =>
+                                        setsortedTags(
+                                          sortedTags.map((editing) =>
+                                            editing.tag_id === tag_id
+                                              ? {
+                                                  ...editing,
+                                                  setting: {
+                                                    ...editing.setting,
+                                                    id: e.target.value,
+                                                  },
+                                                }
+                                              : editing
+                                          )
+                                        )
+                                      }
+                                      onBlur={() => {
+                                        handleBlur(tag_id)
+                                      }}
+                                    />
+                                  </Col>
+                                  <Col
+                                    xs={7}
+                                    className="my-auto text-start oneLineEllipsis fs-7"
+                                    title={name}
+                                  >
+                                    <Form.Control
+                                      // className="border-0"
+                                      defaultValue={
+                                        t.setting.codes && t.setting.codes[0]
+                                          ? t.setting.codes[0]
+                                          : ''
+                                      }
+                                      placeholder="請輸入V0所生成的Code..."
+                                      onChange={(e) =>
+                                        setsortedTags(
+                                          sortedTags.map((editing) =>
+                                            editing.tag_id === tag_id
+                                              ? {
+                                                  ...editing,
+                                                  setting: {
+                                                    ...editing.setting,
+                                                    codes: [e.target.value],
+                                                  },
+                                                }
+                                              : editing
+                                          )
+                                        )
+                                      }
+                                      onBlur={() => {
+                                        handleBlur(tag_id)
+                                      }}
+                                    />
+                                  </Col>
+                                  <Col xs={1} className="d-flex my-auto">
+                                    <Button
+                                      {...dragProvided.dragHandleProps}
+                                      style={{ boxShadow: 'none' }}
+                                      variant="edit"
+                                      // onClick={() => handleDeleteClip(id)}
+                                      title="調 整 順 序"
+                                    >
+                                      <FontAwesomeIcon icon={faBars} />
+                                    </Button>
+                                    <Button
+                                      className="ms-auto"
+                                      style={{ boxShadow: 'none' }}
+                                      variant="edit"
+                                      onClick={() => {
+                                        handleAddSubTag(tag_id, '新分頁', {})
+                                      }}
+                                      title="新 增"
+                                      size="sm"
+                                    >
+                                      <FontAwesomeIcon icon={faCirclePlus} />
+                                    </Button>
+                                  </Col>
+                                </Row>
+                                {t.setting.subtags && (
+                                  <Row>
+                                    <DragDropContext onDragEnd={onDragEnd}>
+                                      {t.setting.subtags &&
+                                      t.setting.subtags ? (
+                                        <Droppable
+                                          key={tag_id}
+                                          droppableId={`${tag_id}_sub`}
+                                          direction="vertical"
+                                        >
+                                          {(
+                                            subdropProvided,
+                                            subdropSnapshot
+                                          ) => (
+                                            <div
+                                              {...subdropProvided.droppableProps}
+                                              ref={subdropProvided.innerRef}
+                                              style={getListStyle(
+                                                subdropSnapshot.isDraggingOver
+                                              )}
+                                              className="w-100 d-flex flex-nowrap"
+                                            >
+                                              <ListGroup className="pe-0 w-100 border-0">
+                                                {t.setting.subtags.map(
+                                                  (st, j) => (
+                                                    <Draggable
+                                                      key={`${tag_id}_${j}`}
+                                                      draggableId={`${tag_id}_${j}`}
+                                                      index={i}
+                                                    >
+                                                      {(
+                                                        subdragProvided,
+                                                        subdragSnapshot
+                                                      ) => (
+                                                        <div
+                                                          ref={
+                                                            subdragProvided.innerRef
+                                                          }
+                                                          {...subdragProvided.draggableProps}
+                                                          // {...subdragProvided.dragHandleProps}
+                                                          // style={getItemStyle(
+                                                          //   dragSnapshot.isDragging,
+                                                          //   dragProvided.draggableProps.style
+                                                          // )}
+                                                          className={`text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1 preview border-0 ${
+                                                            tag_id ===
+                                                            selectedId
+                                                              ? 'active'
+                                                              : ''
+                                                          }`}
+                                                          style={{
+                                                            background: 'white',
+                                                            border:
+                                                              '1px solid #ced4da',
+                                                            borderRadius:
+                                                              '0.375rem',
+                                                            // minHeight: '100px',
+                                                            // maxHeight: '100px',
+                                                            minWidth: '100%',
+                                                            maxWidth: '100%',
+                                                            width: '100%',
+                                                            cursor: 'pointer',
+                                                            ...getItemStyle(
+                                                              subdragSnapshot.isDragging,
+                                                              subdragProvided
+                                                                .draggableProps
+                                                                .style
+                                                            ),
+                                                            // className="position-absolute text-wom fs-7"
+                                                            // top: `${5}%`,
+                                                            // left: `${3 + i * 32}%`,
+                                                            // height: '85%',
+                                                            // width: '30%',
+                                                          }}
+                                                          onClick={(e) => {
+                                                            setselectedId(
+                                                              `${tag_id}_${j}`
+                                                            )
+                                                            e.stopPropagation()
+                                                          }}
+                                                          aria-hidden
+                                                        >
+                                                          <Row className="d-flex row">
+                                                            <Col
+                                                              xs={2}
+                                                              className="my-auto text-start oneLineEllipsis fs-7 ps-5"
+                                                              title={st.name}
+                                                            >
+                                                              <Form.Control
+                                                                className="border-0"
+                                                                defaultValue={
+                                                                  st.name
+                                                                }
+                                                                onChange={(e) =>
+                                                                  setsortedTags(
+                                                                    sortedTags.map(
+                                                                      (
+                                                                        editingST
+                                                                      ) =>
+                                                                        editingST.tag_id ===
+                                                                        tag_id
+                                                                          ? {
+                                                                              ...editingST,
+                                                                              setting:
+                                                                                {
+                                                                                  ...editingST.setting,
+                                                                                  subtags:
+                                                                                    editingST.setting.subtags.map(
+                                                                                      (
+                                                                                        estst,
+                                                                                        k
+                                                                                      ) =>
+                                                                                        j ===
+                                                                                        k
+                                                                                          ? {
+                                                                                              ...estst,
+                                                                                              name: e
+                                                                                                .target
+                                                                                                .value,
+                                                                                            }
+                                                                                          : estst
+                                                                                    ),
+                                                                                },
+                                                                            }
+                                                                          : editingST
+                                                                    )
+                                                                  )
+                                                                }
+                                                                onBlur={() => {
+                                                                  handleBlur(
+                                                                    tag_id
+                                                                  )
+                                                                }}
+                                                              />
+                                                            </Col>
+                                                            <Col
+                                                              xs={2}
+                                                              className="my-auto text-start oneLineEllipsis fs-7"
+                                                            >
+                                                              <Form.Control
+                                                                className="border-0"
+                                                                defaultValue={
+                                                                  st.setting
+                                                                    .id || ''
+                                                                }
+                                                                placeholder="請輸入ID..."
+                                                                onChange={(e) =>
+                                                                  setsortedTags(
+                                                                    sortedTags.map(
+                                                                      (
+                                                                        editingST
+                                                                      ) =>
+                                                                        editingST.tag_id ===
+                                                                        tag_id
+                                                                          ? {
+                                                                              ...editingST,
+                                                                              setting:
+                                                                                {
+                                                                                  ...editingST.setting,
+                                                                                  subtags:
+                                                                                    editingST.setting.subtags.map(
+                                                                                      (
+                                                                                        estst,
+                                                                                        k
+                                                                                      ) =>
+                                                                                        j ===
+                                                                                        k
+                                                                                          ? {
+                                                                                              ...estst,
+                                                                                              setting:
+                                                                                                {
+                                                                                                  ...estst.setting,
+                                                                                                  id: e
+                                                                                                    .target
+                                                                                                    .value,
+                                                                                                },
+                                                                                            }
+                                                                                          : estst
+                                                                                    ),
+                                                                                },
+                                                                            }
+                                                                          : editingST
+                                                                    )
+                                                                  )
+                                                                }
+                                                                onBlur={() => {
+                                                                  handleBlur(
+                                                                    tag_id
+                                                                  )
+                                                                }}
+                                                              />
+                                                            </Col>
+                                                            <Col
+                                                              xs={7}
+                                                              className="my-auto text-start oneLineEllipsis fs-7"
+                                                            >
+                                                              <Form.Control
+                                                                className="border-0"
+                                                                defaultValue={
+                                                                  st.setting
+                                                                    .codes &&
+                                                                  st.setting
+                                                                    .codes[0]
+                                                                    ? st.setting
+                                                                        .codes[0]
+                                                                    : ''
+                                                                }
+                                                                placeholder="請輸入V0所生成的Code..."
+                                                                onChange={(e) =>
+                                                                  setsortedTags(
+                                                                    sortedTags.map(
+                                                                      (
+                                                                        editingST
+                                                                      ) =>
+                                                                        editingST.tag_id ===
+                                                                        tag_id
+                                                                          ? {
+                                                                              ...editingST,
+                                                                              setting:
+                                                                                {
+                                                                                  ...editingST.setting,
+                                                                                  subtags:
+                                                                                    editingST.setting.subtags.map(
+                                                                                      (
+                                                                                        estst,
+                                                                                        k
+                                                                                      ) =>
+                                                                                        j ===
+                                                                                        k
+                                                                                          ? {
+                                                                                              ...estst,
+                                                                                              setting:
+                                                                                                {
+                                                                                                  ...estst.setting,
+                                                                                                  codes:
+                                                                                                    [
+                                                                                                      e
+                                                                                                        .target
+                                                                                                        .value,
+                                                                                                    ],
+                                                                                                },
+                                                                                            }
+                                                                                          : estst
+                                                                                    ),
+                                                                                },
+                                                                            }
+                                                                          : editingST
+                                                                    )
+                                                                  )
+                                                                }
+                                                                onBlur={() => {
+                                                                  handleBlur(
+                                                                    tag_id
+                                                                  )
+                                                                }}
+                                                              />
+                                                            </Col>
+                                                            <Col
+                                                              xs={1}
+                                                              className="d-flex my-auto"
+                                                            >
+                                                              <Button
+                                                                {...subdragProvided.dragHandleProps}
+                                                                style={{
+                                                                  boxShadow:
+                                                                    'none',
+                                                                }}
+                                                                variant="edit"
+                                                                // onClick={() => handleDeleteClip(id)}
+                                                                title="調 整 順 序"
+                                                              >
+                                                                <FontAwesomeIcon
+                                                                  icon={faBars}
+                                                                />
+                                                              </Button>
+                                                            </Col>
+                                                          </Row>
+                                                        </div>
+                                                      )}
+                                                    </Draggable>
+                                                  )
+                                                )}
+                                              </ListGroup>
+                                            </div>
+                                          )}
+                                        </Droppable>
+                                      ) : (
+                                        <Row className="d-flex row">
+                                          <h5 className="m-auto text-secondary">
+                                            目前尚無資料
+                                          </h5>
+                                        </Row>
                                       )}
-                                    </div>
-                                  </Col>
-                                  <Col xs={3} className="d-flex my-auto">
-                                    {/* <Button
-                                      className="ms-auto"
-                                      style={{ boxShadow: 'none' }}
-                                      variant="edit"
-                                      onClick={() => {
-                                        setselectedId(tag_id)
-                                        setshowTag(true)
+                                    </DragDropContext>
+                                    <Row className="px-5">
+                                      <Button
+                                        className="ms-4"
+                                        style={{
+                                          width: '95%',
+                                        }}
+                                        variant="outline-aure"
+                                        onClick={() => {
+                                          handleAddSubTag(tag_id, '新分頁', {})
+                                        }}
+                                      >
+                                        {/* 新增V0預覽&ensp; */}
+                                        <FontAwesomeIcon icon={faCirclePlus} />
+                                      </Button>
+                                    </Row>
+                                  </Row>
+                                )}
+                                {/* <Row className="h-75 w-100 overflow-hidden">
+                                    <IFrameContainer
+                                      setting={{
+                                        id: t.setting?.id,
                                       }}
-                                      title="重 新 命 名"
-                                      size
-                                    >
-                                      <FontAwesomeIcon icon={faEye} />
-                                    </Button> */}
-                                    <Button
-                                      className="ms-auto"
-                                      style={{ boxShadow: 'none' }}
-                                      variant="edit"
-                                      onClick={() => {
-                                        setselectedId(tag_id)
-                                        setshowEdit(true)
-                                      }}
-                                      title="重 新 命 名"
-                                      size="sm"
-                                    >
-                                      <FontAwesomeIcon icon={faPenToSquare} />
-                                    </Button>
-                                    <Button
-                                      style={{ boxShadow: 'none' }}
-                                      variant="red"
-                                      onClick={() => {
-                                        setselectedId(tag_id)
-                                        setdeleteShow(true)
-                                      }}
-                                      title="刪 除"
-                                      size="sm"
-                                    >
-                                      <FontAwesomeIcon icon={faTrashCan} />
-                                    </Button>
-                                  </Col>
-                                </Row>
-                                <Row className="h-75 w-100 overflow-hidden">
-                                  <IFrameContainer
-                                    setting={{
-                                      id: t.setting?.id,
-                                    }}
-                                  />
-                                </Row>
+                                    />
+                                  </Row> */}
                               </div>
                             )}
                           </Draggable>
                         ))}
-                    </ListGroup>
-                  </div>
-                )}
-              </Droppable>
+                      </ListGroup>
+                    </div>
+                  )}
+                </Droppable>
+              ) : (
+                <Row className="d-flex row">
+                  <h5 className="m-auto text-secondary">目前尚無資料</h5>
+                </Row>
+              )}
+            </DragDropContext>
+            <Row className="px-4">
+              <Button
+                className="w-100"
+                variant="outline-aure"
+                onClick={() => {
+                  // setselectedId('')
+                  setshow(true)
+                }}
+              >
+                {/* 新增V0預覽&ensp; */}
+                <FontAwesomeIcon icon={faCirclePlus} />
+              </Button>
+            </Row>
+          </Col>
+        ) : (
+          <Col
+            className="d-flex flex-column h-97 border rounded ms-2"
+            style={{ marginTop: '8px' }}
+          >
+            {selectedId ? (
+              <IFrameContainer
+                setting={{
+                  id: iframeId,
+                }}
+              />
             ) : (
-              <div className="d-flex ps-3 h-97">
-                <h5 className="m-auto text-secondary">目前尚無資料</h5>
-              </div>
+              <h5 className="m-auto text-secondary">尚未選擇頁面</h5>
             )}
-          </DragDropContext>
-        </Col>
-        <Col
-          className="d-flex flex-column h-97 border rounded ms-2"
-          style={{ marginTop: '8px' }}
-        >
-          {selectedId ? (
-            // <Codes
-            //   setting={{
-            //     codes:
-            //       sortedTags.find((t) => t.tag_id === selectedId).setting
-            //         .codes || [],
-            //     setcodes: (codes) => {
-            //       setsortedTags(
-            //         sortedTags.map((st) =>
-            //           st.tag_id === selectedId
-            //             ? {
-            //                 ...st,
-            //                 setting: {
-            //                   ...st.setting,
-            //                   codes,
-            //                 },
-            //               }
-            //             : st
-            //         )
-            //       )
-            //     },
-            //   }}
-            // />
-            <IFrameContainer
-              setting={{
-                id: sortedTags.find((t) => t.tag_id === selectedId).setting.id,
-              }}
-            />
-          ) : (
-            <h5 className="m-auto text-secondary">尚未選擇頁面</h5>
-          )}
-        </Col>
+          </Col>
+        )}
       </Row>
       {show && (
         <ProjectModal
@@ -929,7 +1332,7 @@ function Tags() {
           }}
         />
       )}
-      {showSlide && (
+      {/* {showSlide && (
         <SlideModal
           setting={{
             show: showSlide,
@@ -937,7 +1340,7 @@ function Tags() {
             previews: sortedTags,
           }}
         />
-      )}
+      )} */}
     </Container>
   )
 }
