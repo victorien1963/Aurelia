@@ -119,6 +119,7 @@ function ContextProvider(props) {
   }
   useEffect(() => {
     if (containerId) getTags()
+    else setTags([])
   }, [containerId])
 
   const handleAddTag = async (name, setting) => {
