@@ -7,13 +7,34 @@ import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBars,
+  faBell,
+  faCartShopping,
+  faChartLine,
+  faChartPie,
   faCircleExclamation,
+  faCircleInfo,
   faCircleMinus,
   faCirclePlus,
+  faCloudArrowUp,
+  faCompass,
+  faEnvelope,
+  faFeatherPointed,
+  faFilePen,
+  faFilm,
+  faFolder,
+  faGear,
   faHouse,
+  faImage,
+  faMagnifyingGlass,
   faReply,
+  faRightToBracket,
+  faSackDollar,
+  faShieldHalved,
+  faStar,
   faTimes,
+  faTrashCan,
   faUser,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   Row,
@@ -27,10 +48,38 @@ import {
   Tabs,
   Tab,
   Carousel,
+  Dropdown,
 } from 'react-bootstrap'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Context } from './ContextProvider'
 import IFrameContainer from './IFrameContainer'
+
+const icons = {
+  faFilePen,
+  faCartShopping,
+  faSackDollar,
+  faFolder,
+  faBell,
+  faUser,
+  faCircleExclamation,
+  faHouse,
+  faCompass,
+  faCloudArrowUp,
+  faChartPie,
+  faImage,
+  faEnvelope,
+  faUsers,
+  faCircleInfo,
+  faGear,
+  faTrashCan,
+  faFeatherPointed,
+  faChartLine,
+  faFilm,
+  faMagnifyingGlass,
+  faShieldHalved,
+  faStar,
+  faRightToBracket,
+}
 
 function Codes({ setting }) {
   const { codes = [], setcodes = () => {} } = setting
@@ -629,6 +678,26 @@ function Tags() {
     return sortedTags.find((t) => `${t.tag_id}` === selectedId).setting.id
   }, [selectedId])
 
+  const check404 = () => {
+    if (!selectedId) return false
+    if (selectedId.includes('_')) {
+      const [tag_id, index] = selectedId.split('_')
+      const target = sortedTags.find((t) => `${t.tag_id}` === tag_id)
+      return (
+        target.setting.subtags[index].setting.id &&
+        target.setting.subtags[index].setting.codes &&
+        target.setting.subtags[index].setting.codes[0] &&
+        target.setting.subtags[index].setting.codes[0].code
+      )
+    }
+    return (
+      sortedTags.find((t) => `${t.tag_id}` === selectedId).setting.id &&
+      sortedTags.find((t) => `${t.tag_id}` === selectedId).setting.codes &&
+      sortedTags.find((t) => `${t.tag_id}` === selectedId).setting.codes[0] &&
+      sortedTags.find((t) => `${t.tag_id}` === selectedId).setting.codes[0].code
+    )
+  }
+
   const handleBlur = (tag_id) => {
     const target = sortedTags.find((t) => t.tag_id === tag_id)
     handleEditTag(tag_id, target.name, {
@@ -820,23 +889,59 @@ function Tags() {
                                 <Row className="d-flex row" key={tag_id}>
                                   <Col
                                     xs={1}
-                                    className="my-auto text-start oneLineEllipsis fs-7"
+                                    className="my-auto text-start oneLineEllipsis fs-7 h-100"
                                     title={name}
                                   >
-                                    <Form.Select>
-                                      <option>
-                                        <FontAwesomeIcon
-                                          icon={faHouse}
-                                          className="text-dark"
-                                        />
-                                      </option>
-                                      <option>
-                                        <FontAwesomeIcon
-                                          icon={faUser}
-                                          className="text-dark"
-                                        />
-                                      </option>
-                                    </Form.Select>
+                                    <Dropdown className="my-auto w-100 h-100">
+                                      <Dropdown.Toggle
+                                        id="dropdown-button-drop-end"
+                                        className="px-1 fs-8 m-auto border-0 h-100"
+                                        size="sm"
+                                      >
+                                        <div
+                                          className="d-flex h-100"
+                                          style={{
+                                            width: '30px',
+                                          }}
+                                        >
+                                          <FontAwesomeIcon
+                                            icon={
+                                              icons[t.setting.icon || 'faHouse']
+                                            }
+                                            className="text-dark m-auto fs-7"
+                                          />
+                                        </div>
+                                        {/* {datas[name]} */}
+                                      </Dropdown.Toggle>
+
+                                      <Dropdown.Menu
+                                        className="px-3 overflow-scroll w-100"
+                                        style={{
+                                          maxHeight: '45vh',
+                                        }}
+                                      >
+                                        {Object.keys(icons).map((key) => (
+                                          <Dropdown.Item
+                                            key={key}
+                                            onClick={() =>
+                                              handleEditTag(tag_id, name, {
+                                                ...t.setting,
+                                                icon: key,
+                                              })
+                                            }
+                                          >
+                                            <FontAwesomeIcon
+                                              style={{
+                                                width: '30px',
+                                                height: '30px',
+                                              }}
+                                              icon={icons[key]}
+                                              className="text-dark fs-7"
+                                            />
+                                          </Dropdown.Item>
+                                        ))}
+                                      </Dropdown.Menu>
+                                    </Dropdown>
                                   </Col>
                                   <Col
                                     xs={2}
@@ -1041,8 +1146,13 @@ function Tags() {
                                                         >
                                                           <Row className="d-flex row">
                                                             <Col
+                                                              xs={1}
+                                                              className="my-auto text-start oneLineEllipsis fs-7 h-100"
+                                                              title={name}
+                                                            />
+                                                            <Col
                                                               xs={2}
-                                                              className="my-auto text-start oneLineEllipsis fs-7 ps-5"
+                                                              className="my-auto text-start oneLineEllipsis fs-7"
                                                               title={st.name}
                                                             >
                                                               <Form.Control
@@ -1150,7 +1260,7 @@ function Tags() {
                                                               />
                                                             </Col>
                                                             <Col
-                                                              xs={7}
+                                                              xs={6}
                                                               className="my-auto text-start oneLineEllipsis fs-7"
                                                             >
                                                               <Form.Control
@@ -1325,11 +1435,17 @@ function Tags() {
             style={{ marginTop: '8px' }}
           >
             {selectedId ? (
-              <IFrameContainer
-                setting={{
-                  id: iframeId,
-                }}
-              />
+              check404() ? (
+                <IFrameContainer
+                  setting={{
+                    id: iframeId,
+                  }}
+                />
+              ) : (
+                <h5 className="m-auto text-secondary">
+                  未完成ID和Code的設定，請回到專案管理確認
+                </h5>
+              )
             ) : (
               <h5 className="m-auto text-secondary">尚未選擇頁面</h5>
             )}
