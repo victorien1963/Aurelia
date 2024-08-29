@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBars,
   faCircleExclamation,
+  faCircleMinus,
   faCirclePlus,
   // faCopy,
   // faEye,
@@ -482,7 +483,7 @@ function Tags() {
     handleDeleteTag,
     handleAddSubTag,
     // handleEditSubTag,
-    // handleDeleteSubTag,
+    handleDeleteSubTag,
   } = useContext(Context)
   // const { setToast } = useContext(ToastContext)
   const [sortedTags, setsortedTags] = useState(tags)
@@ -965,9 +966,11 @@ function Tags() {
                                                 {t.setting.subtags.map(
                                                   (st, j) => (
                                                     <Draggable
-                                                      key={`${tag_id}_${j}`}
-                                                      draggableId={`${tag_id}_${j}`}
-                                                      index={i}
+                                                      key={`${tag_id}_${
+                                                        st.id || j
+                                                      }`}
+                                                      draggableId={`${j}`}
+                                                      index={j}
                                                     >
                                                       {(
                                                         subdragProvided,
@@ -1217,6 +1220,28 @@ function Tags() {
                                                               >
                                                                 <FontAwesomeIcon
                                                                   icon={faBars}
+                                                                />
+                                                              </Button>
+                                                              <Button
+                                                                className="ms-auto"
+                                                                style={{
+                                                                  boxShadow:
+                                                                    'none',
+                                                                }}
+                                                                variant="edit"
+                                                                onClick={() => {
+                                                                  handleDeleteSubTag(
+                                                                    tag_id,
+                                                                    j
+                                                                  )
+                                                                }}
+                                                                title="新 增"
+                                                                size="sm"
+                                                              >
+                                                                <FontAwesomeIcon
+                                                                  icon={
+                                                                    faCircleMinus
+                                                                  }
                                                                 />
                                                               </Button>
                                                             </Col>

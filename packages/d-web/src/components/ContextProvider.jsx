@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { Manager } from 'socket.io-client'
 import Toast from 'react-bootstrap/Toast'
 import ToastContainer from 'react-bootstrap/ToastContainer'
+import { v4 as uuidv4 } from 'uuid'
 import apiServices from '../services/apiServices'
 
 function ContextProvider(props) {
@@ -163,6 +164,7 @@ function ContextProvider(props) {
             ...(target.setting.subtags || []),
             {
               name,
+              id: uuidv4(),
               setting,
             },
           ],
