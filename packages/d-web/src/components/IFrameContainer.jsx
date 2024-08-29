@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
+import { Spinner } from 'react-bootstrap'
 
 function IFrameContainer(props) {
   const { setting } = props
@@ -12,11 +13,9 @@ function IFrameContainer(props) {
     // height: 450,
   })
   const getSize = () => {
-    console.log('getting size')
     if (ref.current) {
       const width = ref.current.clientWidth
       const height = ref.current.clientHeight
-      console.log({ width, height })
       return { width, height }
     }
     return false
@@ -37,8 +36,29 @@ function IFrameContainer(props) {
   //   iframeRef.current.height = `${size.height}px`
   //   iframeRef.current.width = `${size.width}px`
   // }, [size])
+  const [loading, setloading] = useState(true)
+  useEffect(() => {
+    if (id) {
+      setloading(true)
+      setTimeout(() => setloading(false), 2000)
+    }
+  }, [id])
   return (
-    <div className="h-100 w-100" ref={ref}>
+    <div className="h-100 w-100 position-relative" ref={ref}>
+      {loading && (
+        <div
+          className="w-100 h-100 d-flex position-absolute"
+          style={{
+            color: '#000',
+            backgroundColor: '#fff',
+          }}
+        >
+          <div className="m-auto d-flex">
+            <Spinner className="my-auto" size="sm" />
+            <span className="my-auto ms-2">頁面載入中...</span>
+          </div>
+        </div>
+      )}
       {size.height && (
         <iframe
           width={size.width}
