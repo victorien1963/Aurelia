@@ -10,21 +10,16 @@ import {
   faCircleExclamation,
   faCircleMinus,
   faCirclePlus,
-  // faCopy,
-  // faEye,
-  // faPenToSquare,
-  // faPlus,
+  faHouse,
   faReply,
-  // faSearch,
   faTimes,
-  // faTrashCan,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   Row,
   Col,
   Button,
   ListGroup,
-  // ListGroupItem,
   Form,
   Modal,
   InputGroup,
@@ -740,7 +735,7 @@ function Tags() {
                   {t.setting.subtags &&
                     t.setting.subtags.map((st, i) => (
                       <Row
-                        className={`index d-flex row py-2 ps-5 rounded ${
+                        className={`index d-flex row py-2 ps-4 rounded ${
                           selectedId === `${tag_id}_${i}` ? 'active' : ''
                         }`}
                         key={`${tag_id}_${i}`}
@@ -776,7 +771,7 @@ function Tags() {
                       {...dropProvided.droppableProps}
                       ref={dropProvided.innerRef}
                       style={getListStyle(dropSnapshot.isDraggingOver)}
-                      className="w-100 d-flex flex-nowrap"
+                      className="w-100 d-flex flex-nowrap pb-0"
                     >
                       <ListGroup className="pe-0 w-100">
                         {sortedTags.map(({ name, tag_id, ...t }, i) => (
@@ -823,6 +818,26 @@ function Tags() {
                                 aria-hidden
                               >
                                 <Row className="d-flex row" key={tag_id}>
+                                  <Col
+                                    xs={1}
+                                    className="my-auto text-start oneLineEllipsis fs-7"
+                                    title={name}
+                                  >
+                                    <Form.Select>
+                                      <option>
+                                        <FontAwesomeIcon
+                                          icon={faHouse}
+                                          className="text-dark"
+                                        />
+                                      </option>
+                                      <option>
+                                        <FontAwesomeIcon
+                                          icon={faUser}
+                                          className="text-dark"
+                                        />
+                                      </option>
+                                    </Form.Select>
+                                  </Col>
                                   <Col
                                     xs={2}
                                     className="my-auto text-start oneLineEllipsis fs-7"
@@ -878,7 +893,7 @@ function Tags() {
                                     />
                                   </Col>
                                   <Col
-                                    xs={7}
+                                    xs={6}
                                     className="my-auto text-start oneLineEllipsis fs-7"
                                     title={name}
                                   >
@@ -960,7 +975,7 @@ function Tags() {
                                               style={getListStyle(
                                                 subdropSnapshot.isDraggingOver
                                               )}
-                                              className="w-100 d-flex flex-nowrap"
+                                              className="w-100 d-flex flex-nowrap pb-0"
                                             >
                                               <ListGroup className="pe-0 w-100 border-0">
                                                 {t.setting.subtags.map(
@@ -986,7 +1001,7 @@ function Tags() {
                                                           //   dragSnapshot.isDragging,
                                                           //   dragProvided.draggableProps.style
                                                           // )}
-                                                          className={`text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1 border-0 ${
+                                                          className={`text-wom fs-7 px-2 py-0 d-flex flex-column flex-grow-1 mx-1 border-0 ${
                                                             tag_id ===
                                                             selectedId
                                                               ? 'active'
@@ -1293,7 +1308,7 @@ function Tags() {
                 onClick={() => {
                   // setselectedId('')
                   // setshow(true)
-                  handleAddTag('點擊這裡修改名稱', {
+                  handleAddTag('自定義命名', {
                     id: '',
                     codes: [],
                   })

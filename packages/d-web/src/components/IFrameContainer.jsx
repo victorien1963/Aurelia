@@ -44,7 +44,7 @@ function IFrameContainer(props) {
           width={size.width}
           height={size.height}
           title="preview"
-          src={`https://generated.vusercontent.net/p/${id}?flags=1&flags=1`}
+          src={`https://aurelia-next.punwave.com/v0/${id}`}
         />
       )}
     </div>
