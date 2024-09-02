@@ -15,7 +15,7 @@ router.get('/:container_id', async (req, res) => {
 
 router.put('/:container_id', async (req, res) => {
     const { name, setting } = req.body
-    const container = await pg.exec('one', 'UPDATE containers SET name = $1, setting = $2 WHERE container_id = $3 RETURNING *', [name, setting, req.params.container_id])
+    const container = await pg.exec('one', 'UPDATE containers SET name = $1, setting = $2, updated_on = current_timestamp WHERE container_id = $3 RETURNING *', [name, setting, req.params.container_id])
     return res.send(container)
 })
 
@@ -26,7 +26,7 @@ router.get('/:container_id/adtag', async (req, res) => {
 router.post('/', async (req, res) => {
     const { user_id } = req.user
     const { name, setting } = req.body
-    const container = await pg.exec('one', 'INSERT INTO containers(name,setting, user_id, created_on) values($1, $2, $3, current_timestamp)', [name, setting, user_id])
+    const container = await pg.exec('one', 'INSERT INTO containers(name,setting, user_id, updated_on, created_on) values($1, $2, $3, current_timestamp, current_timestamp)', [name, setting, user_id])
     return res.send(container)
 })
 

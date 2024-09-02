@@ -13,6 +13,11 @@ router.get('/:container_id', async (req, res) => {
 
 router.put('/:tag_id', async (req, res) => {
     const { name, setting } = req.body
+
+    // update timestamp
+    const selected = pg.exec('one', 'SELECT container_id FROM tags WHERE tag_id = $1', [req.params.tag_id])
+    await pg.exec('none', 'UPDATE containers SET updated_on = current_timestamp WHERE container_id = $1', [selected.container_id]) 
+
     const tag = await pg.exec('one', 'UPDATE tags SET name = $1, setting = $2 WHERE tag_id = $3 RETURNING *', [name, {
         ...setting,
         updated_on: moment().format('yyyy-MM-DD hh:mm:ss'),
@@ -40,6 +45,10 @@ router.put('/:tag_id', async (req, res) => {
 router.post('/', async (req, res) => {
     const { user_id } = req.user
     const { name, container_id, setting } = req.body
+
+    // update timestamp
+    await pg.exec('none', 'UPDATE containers SET updated_on = current_timestamp WHERE container_id = $1', [container_id]) 
+
     const tag = await pg.exec('one', 'INSERT INTO tags(name, setting, container_id, user_id, created_on) values($1, $2, $3, $4, current_timestamp)', [name, {
         ...setting,
         updated_on: moment().format('yyyy-MM-DD hh:mm:ss'),
@@ -60,6 +69,10 @@ router.post('/', async (req, res) => {
 })
 
 router.delete('/:tag_id', async (req, res) => {
+    // update timestamp
+    const selected = pg.exec('one', 'SELECT container_id FROM tags WHERE tag_id = $1', [req.params.tag_id])
+    await pg.exec('none', 'UPDATE containers SET updated_on = current_timestamp WHERE container_id = $1', [selected.container_id]) 
+
     const tag = await pg.exec('one', 'DELETE FROM tags WHERE tag_id = $1 RETURNING *', [req.params.tag_id])
     return res.send(tag)
 })

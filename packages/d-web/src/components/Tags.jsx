@@ -3,7 +3,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useState, useEffect, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import moment from 'moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBars,
@@ -53,7 +52,6 @@ import {
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Context, AuthContext } from './ContextProvider'
 import IFrameContainer from './IFrameContainer'
-import SelectBar from './SelectBar'
 
 const icons = {
   faFilePen,
@@ -532,43 +530,17 @@ function Tags() {
     handleDeleteSubTag,
   } = useContext(Context)
   // const { setToast } = useContext(ToastContext)
-  const [sort, setsort] = useState({ field: 'updated_on', order: 'desc' })
   const [sortedTags, setsortedTags] = useState([])
-  const sortTags = (t, { field, order }) => {
-    const times = order === 'desc' ? 1 : -1
-    setsortedTags(
-      t.sort((a, b) => {
-        if (field === 'updated_on') {
-          return moment(b.setting.updated_on || b.created_on).isAfter(
-            moment(a.setting.updated_on || a.created_on)
-          )
-            ? -1 * times
-            : 1 * times
-        }
-        return moment(b.created_on).isAfter(moment(a.created_on))
-          ? -1 * times
-          : 1 * times
-      })
-    )
-  }
   useEffect(() => {
-    if (sortedTags.length) {
-      setsortedTags([
-        ...sortedTags
-          .filter((st) => tags.find(({ tag_id }) => tag_id === st.tag_id))
-          .map((st) => tags.find(({ tag_id }) => tag_id === st.tag_id)),
-        ...tags.filter(
-          ({ tag_id }) => !sortedTags.some((st) => st.tag_id === tag_id)
-        ),
-      ])
-    } else {
-      sortTags(tags, sort)
-    }
+    setsortedTags([
+      ...sortedTags
+        .filter((st) => tags.find(({ tag_id }) => tag_id === st.tag_id))
+        .map((st) => tags.find(({ tag_id }) => tag_id === st.tag_id)),
+      ...tags.filter(
+        ({ tag_id }) => !sortedTags.some((st) => st.tag_id === tag_id)
+      ),
+    ])
   }, [tags])
-
-  useEffect(() => {
-    if (sortTags.length) sortTags(tags, sort)
-  }, [sort])
 
   const form = [
     {
@@ -787,47 +759,7 @@ function Tags() {
                 }}
               />
             </Col>
-            <Col xs={2} className="ms-auto">
-              <SelectBar
-                setting={{
-                  method: (e) => setsort(JSON.parse(e.target.value)),
-                  name: 'sort',
-                  value: JSON.stringify(sort),
-                  placeholder: '',
-                  content: [
-                    {
-                      name: '建立日期新至舊',
-                      value: JSON.stringify({
-                        field: 'created_on',
-                        order: 'desc',
-                      }),
-                    },
-                    {
-                      name: '建立日期舊至新',
-                      value: JSON.stringify({
-                        field: 'created_on',
-                        order: 'aesc',
-                      }),
-                    },
-                    {
-                      name: '編輯日期近至遠',
-                      value: JSON.stringify({
-                        field: 'updated_on',
-                        order: 'desc',
-                      }),
-                    },
-                    {
-                      name: '編輯日期遠至近',
-                      value: JSON.stringify({
-                        field: 'updated_on',
-                        order: 'aesc',
-                      }),
-                    },
-                  ],
-                }}
-              />
-            </Col>
-            <Col xs={4} className="d-flex pe-0">
+            <Col xs={4} className="d-flex pe-0 ms-auto">
               <Button
                 className="ms-4 w-50"
                 variant="outline-aure"

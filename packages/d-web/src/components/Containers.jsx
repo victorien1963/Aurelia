@@ -3,7 +3,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useState, useEffect, useContext } from 'react'
 import PropTypes from 'prop-types'
-// import moment from 'moment'
+import moment from 'moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCircleExclamation,
@@ -26,6 +26,7 @@ import {
   // Tabs,
 } from 'react-bootstrap'
 import { Context } from './ContextProvider'
+import SelectBar from './SelectBar'
 
 // function IframeContainer() {
 //   const ref = useRef()
@@ -295,6 +296,7 @@ function Containers() {
   // const navigate = useNavigate()
 
   const [selectedId, setselectedId] = useState('')
+  const [sort, setsort] = useState({ field: 'updated_on', order: 'desc' })
   //   const [warn, setWarn] = useState({
   //     show: false,
   //     text: '',
@@ -373,7 +375,46 @@ function Containers() {
           <h4 className="text-aure-dark fw-bold">專案列表</h4>
         </Col>
         <Col xs={1} />
-        <Col xs={3} className="d-flex justifu-content-end" />
+        <Col xs={2} className="ms-auto">
+          <SelectBar
+            setting={{
+              method: (e) => setsort(JSON.parse(e.target.value)),
+              name: 'sort',
+              value: JSON.stringify(sort),
+              placeholder: '',
+              content: [
+                {
+                  name: '建立日期新至舊',
+                  value: JSON.stringify({
+                    field: 'created_on',
+                    order: 'desc',
+                  }),
+                },
+                {
+                  name: '建立日期舊至新',
+                  value: JSON.stringify({
+                    field: 'created_on',
+                    order: 'aesc',
+                  }),
+                },
+                {
+                  name: '編輯日期近至遠',
+                  value: JSON.stringify({
+                    field: 'updated_on',
+                    order: 'desc',
+                  }),
+                },
+                {
+                  name: '編輯日期遠至近',
+                  value: JSON.stringify({
+                    field: 'updated_on',
+                    order: 'aesc',
+                  }),
+                },
+              ],
+            }}
+          />
+        </Col>
         <Col xs={6} className="d-flex pe-0">
           <InputGroup>
             <Form.Control
@@ -434,7 +475,24 @@ function Containers() {
                   ) &&
                     (!search || name.includes(search)))
               )
-              .map(({ name, container_id }) => (
+              .sort((a, b) => {
+                const times = sort.order === 'desc' ? 1 : -1
+                if (sort.field === 'updated_on') {
+                  return (
+                    times *
+                    (moment(b.updated_on || b.created_on).isAfter(
+                      moment(a.updated_on || a.created_on)
+                    )
+                      ? 1
+                      : -1)
+                  )
+                }
+                return (
+                  times *
+                  (moment(b.created_on).isAfter(moment(a.created_on)) ? 1 : -1)
+                )
+              })
+              .map(({ name, container_id, created_on }) => (
                 <ListGroupItem
                   action
                   onClick={() => setContainerId(container_id)}
@@ -453,7 +511,7 @@ function Containers() {
                       建立者｜
                     </div>
                     <div className="fs-7 fw-regular text-chelonia">
-                      建立時間｜
+                      建立時間｜{moment(created_on).format('yyyy-MM-DD')}
                     </div>
                   </Col>
                   <Col xs={3} className="d-flex my-auto">
