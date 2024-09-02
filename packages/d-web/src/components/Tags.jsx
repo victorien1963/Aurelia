@@ -3,7 +3,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useState, useEffect, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-// import moment from 'moment'
+import moment from 'moment'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBars,
@@ -51,8 +51,9 @@ import {
   Dropdown,
 } from 'react-bootstrap'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { Context } from './ContextProvider'
+import { Context, AuthContext } from './ContextProvider'
 import IFrameContainer from './IFrameContainer'
+import SelectBar from './SelectBar'
 
 const icons = {
   faFilePen,
@@ -506,6 +507,7 @@ function ProjectModal({ setting }) {
 }
 
 function Tags() {
+  const { auth, setAuth } = useContext(AuthContext)
   // const navigate = useNavigate()
 
   const [selectedId, setselectedId] = useState('')
@@ -530,17 +532,43 @@ function Tags() {
     handleDeleteSubTag,
   } = useContext(Context)
   // const { setToast } = useContext(ToastContext)
-  const [sortedTags, setsortedTags] = useState(tags)
+  const [sort, setsort] = useState({ field: 'updated_on', order: 'desc' })
+  const [sortedTags, setsortedTags] = useState([])
+  const sortTags = (t, { field, order }) => {
+    const times = order === 'desc' ? 1 : -1
+    setsortedTags(
+      t.sort((a, b) => {
+        if (field === 'updated_on') {
+          return moment(b.setting.updated_on || b.created_on).isAfter(
+            moment(a.setting.updated_on || a.created_on)
+          )
+            ? -1 * times
+            : 1 * times
+        }
+        return moment(b.created_on).isAfter(moment(a.created_on))
+          ? -1 * times
+          : 1 * times
+      })
+    )
+  }
   useEffect(() => {
-    setsortedTags([
-      ...sortedTags.map((st) =>
-        tags.find(({ tag_id }) => tag_id === st.tag_id)
-      ),
-      ...tags.filter(
-        ({ tag_id }) => !sortedTags.some((st) => st.tag_id === tag_id)
-      ),
-    ])
+    if (sortedTags.length) {
+      setsortedTags([
+        ...sortedTags
+          .filter((st) => tags.find(({ tag_id }) => tag_id === st.tag_id))
+          .map((st) => tags.find(({ tag_id }) => tag_id === st.tag_id)),
+        ...tags.filter(
+          ({ tag_id }) => !sortedTags.some((st) => st.tag_id === tag_id)
+        ),
+      ])
+    } else {
+      sortTags(tags, sort)
+    }
   }, [tags])
+
+  useEffect(() => {
+    if (sortTags.length) sortTags(tags, sort)
+  }, [sort])
 
   const form = [
     {
@@ -667,6 +695,12 @@ function Tags() {
 
   const [showTag, setshowTag] = useState(false)
   const [showSlide, setshowSlide] = useState(false)
+  useEffect(() => {
+    setAuth({
+      ...auth,
+      nav: !showSlide,
+    })
+  }, [showSlide])
 
   const iframeId = useMemo(() => {
     if (!selectedId) return ''
@@ -753,7 +787,47 @@ function Tags() {
                 }}
               />
             </Col>
-            <Col xs={4} className="d-flex pe-0 ms-auto">
+            <Col xs={2} className="ms-auto">
+              <SelectBar
+                setting={{
+                  method: (e) => setsort(JSON.parse(e.target.value)),
+                  name: 'sort',
+                  value: JSON.stringify(sort),
+                  placeholder: '',
+                  content: [
+                    {
+                      name: '建立日期新至舊',
+                      value: JSON.stringify({
+                        field: 'created_on',
+                        order: 'desc',
+                      }),
+                    },
+                    {
+                      name: '建立日期舊至新',
+                      value: JSON.stringify({
+                        field: 'created_on',
+                        order: 'aesc',
+                      }),
+                    },
+                    {
+                      name: '編輯日期近至遠',
+                      value: JSON.stringify({
+                        field: 'updated_on',
+                        order: 'desc',
+                      }),
+                    },
+                    {
+                      name: '編輯日期遠至近',
+                      value: JSON.stringify({
+                        field: 'updated_on',
+                        order: 'aesc',
+                      }),
+                    },
+                  ],
+                }}
+              />
+            </Col>
+            <Col xs={4} className="d-flex pe-0">
               <Button
                 className="ms-4 w-50"
                 variant="outline-aure"
@@ -788,18 +862,73 @@ function Tags() {
               {sortedTags.map(({ name, tag_id, ...t }) => (
                 <>
                   <Row
-                    className={`d-flex index row py-2 rounded ${
+                    className={`d-flex index row py-2 rounded flex-nowrap ${
                       selectedId === `${tag_id}` ? 'active' : ''
                     }`}
                     key={tag_id}
                     onClick={() => setselectedId(`${tag_id}`)}
                   >
-                    <h5
-                      className="my-auto text-start oneLineEllipsis fs-7"
+                    <Col
+                      className="my-auto text-start oneLineEllipsis fs-7 h-100"
                       title={name}
                     >
-                      {name}
-                    </h5>
+                      <Dropdown className="my-auto w-100 h-100">
+                        <Dropdown.Toggle
+                          id="dropdown-button-drop-end"
+                          className="px-1 fs-8 m-auto border-0 h-100"
+                          size="sm"
+                        >
+                          <div
+                            className="d-flex h-100"
+                            style={{
+                              width: '18px',
+                            }}
+                          >
+                            <FontAwesomeIcon
+                              icon={icons[t.setting.icon || 'faHouse']}
+                              className="text-dark m-auto fs-7"
+                            />
+                          </div>
+                          {/* {datas[name]} */}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu
+                          className="px-3 overflow-scroll w-100"
+                          style={{
+                            maxHeight: '45vh',
+                          }}
+                        >
+                          {Object.keys(icons).map((key) => (
+                            <Dropdown.Item
+                              key={key}
+                              onClick={() =>
+                                handleEditTag(tag_id, name, {
+                                  ...t.setting,
+                                  icon: key,
+                                })
+                              }
+                            >
+                              <FontAwesomeIcon
+                                style={{
+                                  width: '18px',
+                                  height: '18px',
+                                }}
+                                icon={icons[key]}
+                                className="text-dark fs-7"
+                              />
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </Col>
+                    <Col className="d-flex" xs={9}>
+                      <h5
+                        className="my-auto text-start text-nowrap oneLineEllipsis fs-7"
+                        title={name}
+                      >
+                        {name}
+                      </h5>
+                    </Col>
                   </Row>
                   {t.setting.subtags &&
                     t.setting.subtags.map((st, i) => (
@@ -998,8 +1127,8 @@ function Tags() {
                                     />
                                   </Col>
                                   <Col
-                                    xs={6}
-                                    className="my-auto text-start oneLineEllipsis fs-7"
+                                    xs={5}
+                                    className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
                                     title={name}
                                   >
                                     <Form.Control
@@ -1036,7 +1165,10 @@ function Tags() {
                                       }}
                                     />
                                   </Col>
-                                  <Col xs={1} className="d-flex my-auto">
+                                  <Col
+                                    xs={1}
+                                    className="d-flex my-auto flex-grow-1"
+                                  >
                                     <Button
                                       {...dragProvided.dragHandleProps}
                                       style={{ boxShadow: 'none' }}
@@ -1057,6 +1189,20 @@ function Tags() {
                                       size="sm"
                                     >
                                       <FontAwesomeIcon icon={faCirclePlus} />
+                                    </Button>
+                                    <Button
+                                      className="ms-auto"
+                                      style={{
+                                        boxShadow: 'none',
+                                      }}
+                                      variant="edit"
+                                      onClick={() => {
+                                        handleDeleteTag(tag_id)
+                                      }}
+                                      title="刪 除"
+                                      size="sm"
+                                    >
+                                      <FontAwesomeIcon icon={faCircleMinus} />
                                     </Button>
                                   </Col>
                                 </Row>
@@ -1260,8 +1406,8 @@ function Tags() {
                                                               />
                                                             </Col>
                                                             <Col
-                                                              xs={6}
-                                                              className="my-auto text-start oneLineEllipsis fs-7"
+                                                              xs={5}
+                                                              className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
                                                             >
                                                               <Form.Control
                                                                 className="border-0"
@@ -1331,7 +1477,7 @@ function Tags() {
                                                             </Col>
                                                             <Col
                                                               xs={1}
-                                                              className="d-flex my-auto"
+                                                              className="d-flex my-auto flex-grow-1"
                                                             >
                                                               <Button
                                                                 {...subdragProvided.dragHandleProps}
@@ -1360,7 +1506,7 @@ function Tags() {
                                                                     j
                                                                   )
                                                                 }}
-                                                                title="新 增"
+                                                                title="刪 除"
                                                                 size="sm"
                                                               >
                                                                 <FontAwesomeIcon

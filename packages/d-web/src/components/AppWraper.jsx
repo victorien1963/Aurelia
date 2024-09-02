@@ -28,11 +28,11 @@ function AppWrapper({ children }) {
 
   return auth.authed ? (
     <div>
-      <TopNavBar setting={{}} />
+      {auth.nav && <TopNavBar setting={{}} />}
       <div
         className="d-flex position-relative overflow-hidden"
         style={{
-          height: '92vh',
+          height: auth.nav ? '92vh' : '100vh',
           width: '100vw',
         }}
       >

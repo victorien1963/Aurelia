@@ -1,4 +1,5 @@
 const express = require('express')
+const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
 const pg = require('../services/pgService')
@@ -12,7 +13,10 @@ router.get('/:container_id', async (req, res) => {
 
 router.put('/:tag_id', async (req, res) => {
     const { name, setting } = req.body
-    const tag = await pg.exec('one', 'UPDATE tags SET name = $1, setting = $2 WHERE tag_id = $3 RETURNING *', [name, setting, req.params.tag_id])
+    const tag = await pg.exec('one', 'UPDATE tags SET name = $1, setting = $2 WHERE tag_id = $3 RETURNING *', [name, {
+        ...setting,
+        updated_on: moment().format('yyyy-MM-DD hh:mm:ss'),
+    }, req.params.tag_id])
     if (setting.codes && setting.codes[0] && setting.codes[0].code) {
         const filePath = path.join(__dirname, `../public/v0/${setting.id}.tsx`)
         console.log(filePath)
@@ -36,7 +40,10 @@ router.put('/:tag_id', async (req, res) => {
 router.post('/', async (req, res) => {
     const { user_id } = req.user
     const { name, container_id, setting } = req.body
-    const tag = await pg.exec('one', 'INSERT INTO tags(name, setting, container_id, user_id, created_on) values($1, $2, $3, $4, current_timestamp)', [name, setting, container_id, user_id])
+    const tag = await pg.exec('one', 'INSERT INTO tags(name, setting, container_id, user_id, created_on) values($1, $2, $3, $4, current_timestamp)', [name, {
+        ...setting,
+        updated_on: moment().format('yyyy-MM-DD hh:mm:ss'),
+    }, container_id, user_id])
 
     // write file to next
     if (setting.codes && setting.codes[0] && setting.codes[0].code) {

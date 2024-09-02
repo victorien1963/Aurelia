@@ -12,6 +12,7 @@ function ContextProvider(props) {
   const { children } = props
   const [auth, setAuth] = useState({
     authed: false,
+    nav: true,
   })
   const authValue = useMemo(() => ({ auth, setAuth }), [auth])
   const { authed, user_id } = auth
@@ -20,8 +21,9 @@ function ContextProvider(props) {
     const { user } = await apiServices.me()
     if (user) {
       setAuth({
-        authed: true,
+        ...auth,
         ...user,
+        authed: true,
       })
     }
   }
