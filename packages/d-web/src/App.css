@@ -70,6 +70,24 @@
   color: #979797;
 }
 
+.text-blue {
+  color: #2e3c91;
+}
+
+.text-blue:hover {
+  color: #162060;
+  cursor: pointer;
+}
+
+.text-red {
+  color: #842b2b;
+}
+
+.text-red:hover {
+  color: #571010;
+  cursor: pointer;
+}
+
 .text-lightred {
   color: #ce9e9e;
   cursor: pointer;
@@ -307,6 +325,10 @@
   cursor: pointer;
   border: 3px solid #1c0a02 !important;
 }
+
+.dropdown-toggle::after {
+  display: none !important;
+ }
 
 @keyframes loader-dot {
 	0%, 100% {

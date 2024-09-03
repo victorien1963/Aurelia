@@ -14,6 +14,7 @@ import {
   faCircleInfo,
   faCircleMinus,
   faCirclePlus,
+  faClapperboard,
   faCloudArrowUp,
   faCompass,
   faEnvelope,
@@ -124,7 +125,7 @@ function Codes({ setting }) {
                 <Col xs={10}>
                   <Form.Control
                     size="sm"
-                    className="border-0 h-50 fs-6"
+                    className="h-50 fs-6"
                     name="title"
                     value={title}
                     onChange={(e) => handleChangeCode(e, id)}
@@ -181,7 +182,8 @@ function SlideModal({ setting }) {
       size="xl"
     >
       <Modal.Header closeButton className="h5">
-        幻燈片模式
+        幻燈片模式&ensp;
+        <FontAwesomeIcon icon={faClapperboard} />
       </Modal.Header>
       <Modal.Body
         className="p-4"
@@ -713,7 +715,7 @@ function Tags() {
 
   return (
     <Container className="d-flex flex-column pt-3 h-100">
-      <Row style={{ paddingLeft: '1.5rem', paddingRight: '.75rem' }}>
+      <Row style={{ paddingLeft: '1rem', paddingRight: '.75rem' }}>
         {showSlide ? (
           <>
             <Col xs={2} className="d-flex ps-0">
@@ -741,7 +743,7 @@ function Tags() {
                 架構管理 / 後台
               </h4>
             </Col>
-            <Col xs={1} className="d-flex ps-0">
+            <Col xs={1} className="d-flex">
               <h5 className="my-auto text-aure-dark fw-bold text-nowrap">
                 系統名稱
               </h5>
@@ -777,7 +779,8 @@ function Tags() {
                   setshowSlide(true)
                 }}
               >
-                幻燈片模式
+                幻燈片模式&ensp;
+                <FontAwesomeIcon icon={faClapperboard} />
               </Button>
             </Col>
           </>
@@ -801,7 +804,7 @@ function Tags() {
                     onClick={() => setselectedId(`${tag_id}`)}
                   >
                     <Col
-                      className="my-auto text-start oneLineEllipsis fs-7 h-100"
+                      className="my-auto text-center oneLineEllipsis fs-7 h-100"
                       title={name}
                     >
                       <Dropdown className="my-auto w-100 h-100">
@@ -884,7 +887,7 @@ function Tags() {
             </ListGroup>
           ) : (
             <div className="d-flex ps-3 h-97">
-              <h5 className="m-auto text-secondary">目前尚無資料</h5>
+              <h6 className="m-auto py-5 text-secondary">目前尚無資料</h6>
             </div>
           )}
         </Col>
@@ -919,10 +922,10 @@ function Tags() {
                                 //   dragSnapshot.isDragging,
                                 //   dragProvided.draggableProps.style
                                 // )}
-                                className={`text-wom fs-7 p-2 d-flex flex-column flex-grow-1 mx-1 preview border-0 list ${
+                                className={`text-wom fs-7 p-2 pt-3 d-flex flex-column flex-grow-1 mx-1 preview border-0 list ${
                                   selectedId.split('_')[0] === `${tag_id}`
                                     ? 'active'
-                                    : ''
+                                    : 'active'
                                 }`}
                                 style={{
                                   background: 'white',
@@ -950,7 +953,7 @@ function Tags() {
                                 <Row className="d-flex row" key={tag_id}>
                                   <Col
                                     xs={1}
-                                    className="my-auto text-start oneLineEllipsis fs-7 h-100"
+                                    className="my-auto text-center oneLineEllipsis fs-7 h-100"
                                     title={name}
                                   >
                                     <Dropdown className="my-auto w-100 h-100">
@@ -1006,11 +1009,10 @@ function Tags() {
                                   </Col>
                                   <Col
                                     xs={2}
-                                    className="my-auto text-start oneLineEllipsis fs-7"
+                                    className="my-auto text-start ps-0 oneLineEllipsis fs-7"
                                     title={name}
                                   >
                                     <Form.Control
-                                      className="border-0"
                                       defaultValue={name}
                                       onChange={(e) =>
                                         setsortedTags(
@@ -1035,7 +1037,6 @@ function Tags() {
                                     title={name}
                                   >
                                     <Form.Control
-                                      // className="border-0"
                                       defaultValue={t.setting.id || ''}
                                       placeholder="請輸入ID..."
                                       onChange={(e) =>
@@ -1064,7 +1065,6 @@ function Tags() {
                                     title={name}
                                   >
                                     <Form.Control
-                                      // className="border-0"
                                       defaultValue={
                                         t.setting.codes && t.setting.codes[0]
                                           ? t.setting.codes[0].code
@@ -1120,7 +1120,10 @@ function Tags() {
                                       title="新 增"
                                       size="sm"
                                     >
-                                      <FontAwesomeIcon icon={faCirclePlus} />
+                                      <FontAwesomeIcon
+                                        className="text-blue"
+                                        icon={faCirclePlus}
+                                      />
                                     </Button>
                                     <Button
                                       className="ms-auto"
@@ -1134,7 +1137,10 @@ function Tags() {
                                       title="刪 除"
                                       size="sm"
                                     >
-                                      <FontAwesomeIcon icon={faCircleMinus} />
+                                      <FontAwesomeIcon
+                                        className="text-red"
+                                        icon={faCircleMinus}
+                                      />
                                     </Button>
                                   </Col>
                                 </Row>
@@ -1225,7 +1231,7 @@ function Tags() {
                                                           <Row className="d-flex row">
                                                             <Col
                                                               xs={1}
-                                                              className="my-auto text-start oneLineEllipsis fs-7 h-100"
+                                                              className="my-auto text-end oneLineEllipsis fs-7 h-100"
                                                               title={name}
                                                             />
                                                             <Col
@@ -1234,7 +1240,6 @@ function Tags() {
                                                               title={st.name}
                                                             >
                                                               <Form.Control
-                                                                className="border-0"
                                                                 defaultValue={
                                                                   st.name
                                                                 }
@@ -1285,7 +1290,6 @@ function Tags() {
                                                               className="my-auto text-start oneLineEllipsis fs-7"
                                                             >
                                                               <Form.Control
-                                                                className="border-0"
                                                                 defaultValue={
                                                                   st.setting
                                                                     .id || ''
@@ -1342,7 +1346,6 @@ function Tags() {
                                                               className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
                                                             >
                                                               <Form.Control
-                                                                className="border-0"
                                                                 as="textarea"
                                                                 rows={1}
                                                                 defaultValue={
@@ -1442,6 +1445,7 @@ function Tags() {
                                                                 size="sm"
                                                               >
                                                                 <FontAwesomeIcon
+                                                                  className="text-red"
                                                                   icon={
                                                                     faCircleMinus
                                                                   }
@@ -1460,9 +1464,9 @@ function Tags() {
                                         </Droppable>
                                       ) : (
                                         <Row className="d-flex row">
-                                          <h5 className="m-auto text-secondary">
+                                          <h6 className="m-auto py-5 text-secondary">
                                             目前尚無資料
-                                          </h5>
+                                          </h6>
                                         </Row>
                                       )}
                                     </DragDropContext>
@@ -1485,7 +1489,9 @@ function Tags() {
                 </Droppable>
               ) : (
                 <Row className="d-flex row">
-                  <h5 className="m-auto text-secondary">目前尚無資料</h5>
+                  <h6 className="m-auto text-secondary py-3">
+                    點擊下方＋以新增列
+                  </h6>
                 </Row>
               )}
             </DragDropContext>
