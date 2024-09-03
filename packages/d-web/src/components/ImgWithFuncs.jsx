@@ -21,7 +21,7 @@ function ImgWithFunc({ setting }) {
     disabled = false,
   } = setting
 
-  const { containers } = useContext(Context)
+  const { containers, getContainers } = useContext(Context)
   const { icon } = containers.find((c) => c.container_id === container_id).setting
 
   const [uploading, setuploading] = useState(null)
@@ -52,6 +52,7 @@ function ImgWithFunc({ setting }) {
       })
       console.log(res)
       // if (!res.error) handlePicChange(`/api/draft/image/${res[0].name}`)
+      getContainers()
       setuploading(null)
     }
     if (uploading) uploadImg()

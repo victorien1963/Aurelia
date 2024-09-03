@@ -244,6 +244,7 @@ function ContextProvider(props) {
   const contextValue = useMemo(
     () => ({
       containers,
+      getContainers,
       containerId,
       setContainerId,
       handleAddContainer,
