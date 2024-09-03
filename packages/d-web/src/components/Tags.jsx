@@ -724,7 +724,7 @@ function Tags() {
                   disabled: showSlide,
                 }}
               />
-              <h4 className="my-auto text-aure-dark fw-bold">
+              <h4 className="my-auto text-aure-dark fw-bold text-nowrap">
                 {container.name}
               </h4>
             </Col>

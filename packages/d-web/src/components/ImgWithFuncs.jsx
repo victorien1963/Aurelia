@@ -66,13 +66,22 @@ function ImgWithFunc({ setting }) {
       }}
     >
       <div className="position-relative imgHover w-100 h-100 ms-auto d-flex">
-        <Form.Label className="m-auto w-100 h-100" htmlFor={id}>
+        <Form.Label className="m-auto w-100 h-100 d-flex" htmlFor={id}>
           {icon && icon.name
-            ? <Image className="m-auto" width="auto" height="100%" src={`api/image/${icon.name}`} />
+            ? <Image
+              className="m-auto"
+              src={`api/image/${icon.name}`}
+              style={{
+                maxHeight: '90%',
+                maxWidth: '90%',
+              }}
+            />
             : <FontAwesomeIcon
               icon={faImage}
-              className="text-dai-white h-100 m-auto"
+              className="text-dai-white m-auto"
               style={{
+                height: '90%',
+                width: '90%',
                 cursor: 'pointer'
               }}
             />
