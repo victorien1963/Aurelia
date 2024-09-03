@@ -52,6 +52,7 @@ import {
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Context, AuthContext } from './ContextProvider'
 import IFrameContainer from './IFrameContainer'
+import ImgWithFunc from './ImgWithFuncs'
 
 const icons = {
   faFilePen,
@@ -716,7 +717,13 @@ function Tags() {
       <Row style={{ paddingLeft: '1.5rem', paddingRight: '.75rem' }}>
         {showSlide ? (
           <>
-            <Col xs={2} className="d-flex ps-0">
+            <Col xs={2} className="d-flex ps-0 h-100">
+              <ImgWithFunc
+                setting={{
+                  container_id: containerId,
+                  disabled: showSlide,
+                }}
+              />
               <h4 className="my-auto text-aure-dark fw-bold">
                 {container.name}
               </h4>
@@ -741,12 +748,19 @@ function Tags() {
                 架構管理 / 後台
               </h4>
             </Col>
-            <Col xs={1} className="d-flex ps-0">
+            <Col xs={1} className="d-flex ps-0 flex-grow-1">
               <h5 className="my-auto text-aure-dark fw-bold text-nowrap">
                 系統名稱
               </h5>
             </Col>
-            <Col xs={2} className="d-flex ps-0">
+            <Col className="d-flex ps-0 flex-grow-1">
+              <ImgWithFunc
+                setting={{
+                  container_id: containerId,
+                }}
+              />
+            </Col>
+            <Col xs={2} className="d-flex ps-0 flex-grow-1">
               <Form.Control
                 defaultValue={container.name}
                 placeholder="請輸入系統名稱..."
@@ -759,7 +773,8 @@ function Tags() {
                 }}
               />
             </Col>
-            <Col xs={4} className="d-flex pe-0 ms-auto">
+            <Col xs={3} />
+            <Col xs={3} className="d-flex pe-0 ms-auto">
               <Button
                 className="ms-4 w-50"
                 variant="outline-aure"

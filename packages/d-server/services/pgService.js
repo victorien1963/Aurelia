@@ -39,7 +39,11 @@ const checkAll = async () => {
     await db.none('CREATE TABLE IF NOT EXISTS users (user_id serial PRIMARY KEY, name VARCHAR ( 50 ) NOT NULL, email VARCHAR ( 255 ) UNIQUE NOT NULL, password VARCHAR ( 500 ) NOT NULL, setting JSONB NOT NULL, created_on TIMESTAMP NOT NULL, last_login TIMESTAMP)')
     await db.none('CREATE TABLE IF NOT EXISTS containers (container_id serial PRIMARY KEY, name VARCHAR ( 50 ) NOT NULL, setting JSONB NOT NULL, user_id  serial NOT NULL, created_on TIMESTAMP NOT NULL, FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE cascade)')
     await db.none('CREATE TABLE IF NOT EXISTS tags (tag_id serial PRIMARY KEY, name VARCHAR ( 50 ) NOT NULL, setting JSONB NOT NULL, container_id serial NOT NULL, user_id  serial NOT NULL, created_on TIMESTAMP NOT NULL, FOREIGN KEY (container_id) REFERENCES containers (container_id) ON DELETE cascade, FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE cascade)')
-    await db.none('ALTER TABLE containers ADD COLUMN updated_on TIMESTAMP')
+    try {
+        await db.none('ALTER TABLE containers ADD COLUMN updated_on TIMESTAMP')
+    } catch(e) {
+        console.log('altered')
+    }
 
     await db.one('SELECT setval(\'users_user_id_seq\', (SELECT MAX(user_id) FROM users)+1)')
     console.log('All Table Checked')

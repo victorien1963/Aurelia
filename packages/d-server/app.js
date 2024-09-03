@@ -8,6 +8,7 @@ const logger = require('morgan')
 const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const socket = require('./services/socket')
+const { download } = require('./services/minio')
 // postgres
 const pg = require('./services/pgService')
 
@@ -52,6 +53,16 @@ app.get('/me', getUser, async (req, res) => {
   return res.send({
     user: req.user,
   })
+})
+
+app.get('/image/:name', async (req, res) => {
+  try {
+    const file = await download({ Key: req.params.name })
+    if (!file.error) file.pipe(res)
+    else return res.send(file)
+  } catch (e) {
+      return res.send('')
+  }
 })
 
 // catch 404 and forward to error handler
