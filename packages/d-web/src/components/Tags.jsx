@@ -716,7 +716,7 @@ function Tags() {
 
   return (
     <Container className="d-flex flex-column pt-3 h-100">
-      <Row style={{ paddingLeft: '1rem', paddingRight: '.75rem' }}>
+      <Row style={{ paddingLeft: '.5rem', paddingRight: '.75rem' }}>
         {showSlide ? (
           <>
             <Col xs={2} className="d-flex ps-0 h-100">
@@ -726,7 +726,7 @@ function Tags() {
                   disabled: showSlide,
                 }}
               />
-              <h4 className="my-auto text-aure-dark fw-bold text-nowrap">
+              <h4 className="my-auto text-aure-dark fw-bold text-nowrap ps-3">
                 {container.name}
               </h4>
             </Col>
@@ -750,9 +750,9 @@ function Tags() {
                 架構管理 / 後台
               </h4>
             </Col>
-            <Col xs={1} className="d-flex">
+            <Col xs={2} className="d-flex">
               <h5 className="my-auto text-aure-dark fw-bold text-nowrap">
-                系統名稱
+                系統LOGO與名稱：
               </h5>
             </Col>
             <Col className="d-flex ps-0 flex-grow-1">
@@ -761,9 +761,10 @@ function Tags() {
                   container_id: containerId,
                 }}
               />
-            </Col>
-            <Col xs={2} className="d-flex ps-0 flex-grow-1">
+              {/* </Col>
+            <Col className="d-flex ps-0 flex-grow-1"> */}
               <Form.Control
+                className="ms-3"
                 defaultValue={container.name}
                 placeholder="請輸入系統名稱..."
                 onBlur={(e) => {
@@ -775,7 +776,7 @@ function Tags() {
                 }}
               />
             </Col>
-            <Col xs={3} />
+            <Col xs={2} />
             <Col xs={3} className="d-flex pe-0 ms-auto">
               <Button
                 className="ms-4 w-50"
