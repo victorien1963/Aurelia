@@ -44,9 +44,9 @@ passport.use(new LocalStrategy({
 
 router.post('/login', passport.authenticate('local', { session: false }), signin)
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body
+  const { email, password } = req.body
   const hashed = await hash(password)
-  const user = await pg.exec('one','INSERT INTO users(name, email, password, setting, created_on) VALUES($1, $2, $3, $4, current_timestamp) RETURNING user_id,email', [name, email, hashed, { admin: true }])
+  const user = await pg.exec('one','INSERT INTO users(name, email, password, setting, created_on) VALUES($1, $2, $3, $4, current_timestamp) RETURNING user_id,email', [email.split('@')[0], email, hashed, { admin: true }])
   if (!user.user_id) {
     console.log(`Event: register failed, Time:${Date.now()} User: none Content: register failed, email ${email} already exists`)
     return res.send({ error: 'email exists' })
