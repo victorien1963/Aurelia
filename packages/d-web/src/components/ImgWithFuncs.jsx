@@ -17,7 +17,7 @@ function ImgWithFunc({ setting }) {
   const {
     container_id,
     id = 'file',
-    scale = '50px',
+    scale = '40px',
     disabled = false,
   } = setting
 
@@ -70,19 +70,21 @@ function ImgWithFunc({ setting }) {
         <Form.Label className="m-auto w-100 h-100 d-flex" htmlFor={id}>
           {icon && icon.name
             ? <Image
+              title="點擊上傳LOGO圖片"
               className="m-auto"
               src={`api/image/${icon.name}`}
               style={{
-                maxHeight: '90%',
-                maxWidth: '90%',
+                maxHeight: '100%',
+                maxWidth: '100%',
               }}
             />
             : <FontAwesomeIcon
+              title="點擊上傳LOGO圖片"
               icon={faImage}
               className="text-dai-white m-auto"
               style={{
-                height: '90%',
-                width: '90%',
+                height: '100%',
+                width: '100%',
                 cursor: 'pointer'
               }}
             />
