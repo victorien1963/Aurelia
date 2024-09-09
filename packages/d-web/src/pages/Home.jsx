@@ -2,8 +2,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import 'moment-timezone'
 import {
@@ -79,7 +78,8 @@ function Warn({ setting }) {
 function Home() {
   const { auth, setAuth } = useContext(AuthContext)
   const { setToast } = useContext(ToastContext)
-  const navigate = useNavigate()
+
+  const [method, setmethod] = useState('login')
 
   const [reveal, setReveal] = useState(false)
   const fields = [
@@ -96,17 +96,60 @@ function Home() {
       placeholder: '密碼',
     },
   ]
+
+  const registerFields = [
+    {
+      label: '帳號',
+      type: 'text',
+      name: 'email',
+      placeholder: '帳號',
+    },
+    {
+      label: '密碼',
+      type: 'password',
+      name: 'password',
+      placeholder: '密碼',
+    },
+    {
+      label: '確認密碼',
+      type: 'password',
+      name: 'cpassword',
+      placeholder: '確認密碼',
+    },
+  ]
   const [data, setData] = useState({
     email: '',
     password: '',
   })
+
+  useEffect(() => {
+    setData(
+      (method === 'login' ? fields : registerFields).reduce(
+        (prev, cur) => ({ ...prev, [cur.name]: '' }),
+        {}
+      )
+    )
+  }, [method])
   const onDataChange = (event) => {
     setData({ ...data, [event.target.name]: event.target.value })
   }
   const handleLogin = async () => {
-    const { token } = await apiServices.login(data)
+    if (data.cpassword && data.password !== data.cpassword) {
+      setToast({
+        show: true,
+        text: `兩次輸入密碼不同`,
+      })
+      return
+    }
+    const { token } =
+      method === 'login'
+        ? await apiServices.login(data)
+        : await apiServices.register(data)
     if (!token) {
-      setToast({ show: true, text: '登 入 失 敗' })
+      setToast({
+        show: true,
+        text: `${method === 'login' ? '登 入' : '註 冊'} 失 敗`,
+      })
       return
     }
     document.cookie = `token=${token}; Domain=${window.location.hostname}; Path=/;`
@@ -138,7 +181,7 @@ function Home() {
           </div>
           <div className="d-flex w-100 my-auto" style={{ height: '35%' }}>
             <Form className="py-3 px-5 mx-auto d-flex flex-column">
-              {fields.map((field) => (
+              {(method === 'login' ? fields : registerFields).map((field) => (
                 <Form.Group key={field.name} className="d-flex mb-2">
                   {/* <Form.Label>{field.label}</Form.Label> */}
                   {field.type === 'password' ? (
@@ -150,6 +193,7 @@ function Home() {
                         size="sm"
                         name={field.name}
                         type={reveal ? 'text' : field.type}
+                        value={data[field.name]}
                         onChange={onDataChange}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && !e.isComposing) handleLogin()
@@ -176,6 +220,7 @@ function Home() {
                       size="sm"
                       name={field.name}
                       type={field.type}
+                      value={data[field.name]}
                       onChange={onDataChange}
                       placeholder={field.placeholder}
                     />
@@ -186,19 +231,22 @@ function Home() {
                 className="mx-auto my-2"
                 variant="aure2"
                 onClick={handleLogin}
-                btnText="Login"
+                btnText={method === 'login' ? 'Login' : 'Register'}
+                disabled={Object.keys(data).some((key) => !data[key])}
               />
-              <div className="d-flex d-none">
+              <div className="d-flex">
                 <span
                   className="w-100 mx-auto small"
                   style={{
                     cursor: 'pointer',
                     textDecoration: 'underline',
                   }}
-                  onClick={() => navigate('/register')}
+                  onClick={() =>
+                    setmethod(method === 'login' ? 'register' : 'login')
+                  }
                   aria-hidden
                 >
-                  註冊
+                  {method === 'login' ? '註冊' : '登入'}
                 </span>
               </div>
             </Form>
