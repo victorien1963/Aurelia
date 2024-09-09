@@ -1075,7 +1075,7 @@ function Tags() {
                                     />
                                   </Col>
                                   <Col
-                                    xs={5}
+                                    xs={2}
                                     className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
                                     title={name}
                                   >
@@ -1097,6 +1097,48 @@ function Tags() {
                                                   setting: {
                                                     ...editing.setting,
                                                     codes: [
+                                                      {
+                                                        code: e.target.value,
+                                                      },
+                                                      editing.setting
+                                                        .codes[1] || {},
+                                                    ],
+                                                  },
+                                                }
+                                              : editing
+                                          )
+                                        )
+                                      }
+                                      onBlur={() => {
+                                        handleBlur(tag_id)
+                                      }}
+                                    />
+                                  </Col>
+                                  <Col
+                                    xs={2}
+                                    className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
+                                    title={name}
+                                  >
+                                    <Form.Control
+                                      defaultValue={
+                                        t.setting.codes && t.setting.codes[1]
+                                          ? t.setting.codes[1].code
+                                          : ''
+                                      }
+                                      as="textarea"
+                                      placeholder="請輸入V0所生成的global.css..."
+                                      rows={1}
+                                      onChange={(e) =>
+                                        setsortedTags(
+                                          sortedTags.map((editing) =>
+                                            editing.tag_id === tag_id
+                                              ? {
+                                                  ...editing,
+                                                  setting: {
+                                                    ...editing.setting,
+                                                    codes: [
+                                                      editing.setting
+                                                        .codes[0] || {},
                                                       {
                                                         code: e.target.value,
                                                       },
@@ -1357,7 +1399,7 @@ function Tags() {
                                                               />
                                                             </Col>
                                                             <Col
-                                                              xs={5}
+                                                              xs={2}
                                                               className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
                                                             >
                                                               <Form.Control
@@ -1402,6 +1444,83 @@ function Tags() {
                                                                                                   ...estst.setting,
                                                                                                   codes:
                                                                                                     [
+                                                                                                      {
+                                                                                                        code: e
+                                                                                                          .target
+                                                                                                          .value,
+                                                                                                      },
+                                                                                                      estst
+                                                                                                        .setting
+                                                                                                        .codes[1] ||
+                                                                                                        {},
+                                                                                                    ],
+                                                                                                },
+                                                                                            }
+                                                                                          : estst
+                                                                                    ),
+                                                                                },
+                                                                            }
+                                                                          : editingST
+                                                                    )
+                                                                  )
+                                                                }
+                                                                onBlur={() => {
+                                                                  handleBlur(
+                                                                    tag_id
+                                                                  )
+                                                                }}
+                                                              />
+                                                            </Col>
+                                                            <Col
+                                                              xs={2}
+                                                              className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
+                                                            >
+                                                              <Form.Control
+                                                                as="textarea"
+                                                                rows={1}
+                                                                defaultValue={
+                                                                  st.setting
+                                                                    .codes &&
+                                                                  st.setting
+                                                                    .codes[1]
+                                                                    ? st.setting
+                                                                        .codes[1]
+                                                                        .code
+                                                                    : ''
+                                                                }
+                                                                placeholder="請輸入V0所生成的global.css..."
+                                                                onChange={(e) =>
+                                                                  setsortedTags(
+                                                                    sortedTags.map(
+                                                                      (
+                                                                        editingST
+                                                                      ) =>
+                                                                        editingST.tag_id ===
+                                                                        tag_id
+                                                                          ? {
+                                                                              ...editingST,
+                                                                              setting:
+                                                                                {
+                                                                                  ...editingST.setting,
+                                                                                  subtags:
+                                                                                    editingST.setting.subtags.map(
+                                                                                      (
+                                                                                        estst,
+                                                                                        k
+                                                                                      ) =>
+                                                                                        j ===
+                                                                                        k
+                                                                                          ? {
+                                                                                              ...estst,
+                                                                                              setting:
+                                                                                                {
+                                                                                                  ...estst.setting,
+                                                                                                  codes:
+                                                                                                    [
+                                                                                                      estst
+                                                                                                        .setting
+                                                                                                        .codes[0] ||
+                                                                                                        {},
                                                                                                       {
                                                                                                         code: e
                                                                                                           .target
