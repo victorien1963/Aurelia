@@ -24,12 +24,9 @@ router.put('/:tag_id', async (req, res) => {
     }, req.params.tag_id])
     if (setting.codes && setting.codes[0] && setting.codes[0].code) {
         const filePath = path.join(__dirname, `../public/v0/${setting.id}.tsx`)
-        const cssfilePath = path.join(__dirname, `../public/v0/${setting.id}.module.css`)
+        const cssfilePath = path.join(__dirname, `../public/v0/${setting.id}.css`)
         console.log(filePath)
-        fs.writeFile(filePath, `
-import "./${setting.id}.module.css"
-${setting.codes[0]?.code || ''}
-        `, (result) => {
+        fs.writeFile(filePath, setting.codes[0]?.code || '', (result) => {
             console.log(result)
         })
         fs.writeFile(cssfilePath, setting.codes[1]?.code || '', (result) => {
@@ -40,11 +37,8 @@ ${setting.codes[0]?.code || ''}
         setting.subtags.map(async (st) => {
             if (st.setting.id && st.setting.codes && st.setting.codes[0] && st.setting.codes[0].code) {
                 const filePath = path.join(__dirname, `../public/v0/${st.setting.id}.tsx`)
-                const cssfilePath = path.join(__dirname, `../public/v0/${st.setting.id}.module.css`)
-                fs.writeFile(filePath, `
-import "./${st.setting.id}.module.css"
-${st.setting.codes[0]?.code || ''}
-                `, (result) => {
+                const cssfilePath = path.join(__dirname, `../public/v0/${st.setting.id}.css`)
+                fs.writeFile(filePath, st.setting.codes[0]?.code || '', (result) => {
                     console.log(result)
                 })
                 fs.writeFile(cssfilePath, st.setting.codes[1]?.code || '', (result) => {
@@ -71,12 +65,9 @@ router.post('/', async (req, res) => {
     // write file to next
     if (setting.codes && setting.codes[0] && setting.codes[0].code) {
         const filePath = path.join(__dirname, `../public/v0/${setting.id}.tsx`)
-        const cssfilePath = path.join(__dirname, `../public/v0/${setting.id}.module.css`)
+        const cssfilePath = path.join(__dirname, `../public/v0/${setting.id}.css`)
         console.log(filePath)
-        fs.writeFile(filePath, `
-import "./${setting.id}.module.css"
-${setting.codes[0]?.code || ''}
-            `, (result) => {
+        fs.writeFile(filePath, setting.codes[0]?.code || '', (result) => {
             console.log(result)
             return res.send(tag)
         })

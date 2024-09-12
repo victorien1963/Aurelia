@@ -492,7 +492,7 @@ function Containers() {
                   (moment(b.created_on).isAfter(moment(a.created_on)) ? 1 : -1)
                 )
               })
-              .map(({ name, container_id, created_on }) => (
+              .map(({ name, container_id, created_on, updated_on }) => (
                 <ListGroupItem
                   action
                   onClick={() => setContainerId(container_id)}
@@ -508,10 +508,10 @@ function Containers() {
                   </Col>
                   <Col xs={3} className="my-auto text-start ps-2">
                     <div className="fs-7 fw-regular text-chelonia">
-                      建立者｜
+                      建立時間｜{moment(created_on).format('yyyy-MM-DD')}
                     </div>
                     <div className="fs-7 fw-regular text-chelonia">
-                      建立時間｜{moment(created_on).format('yyyy-MM-DD')}
+                      最後更新時間｜{moment(updated_on).format('yyyy-MM-DD')}
                     </div>
                   </Col>
                   <Col xs={3} className="d-flex my-auto">

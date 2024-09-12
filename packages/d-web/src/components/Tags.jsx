@@ -738,8 +738,8 @@ function Tags() {
                   setshowSlide(false)
                 }}
               >
-                返回專案管理&ensp;
-                <FontAwesomeIcon icon={faReply} />
+                登出&ensp;
+                <FontAwesomeIcon icon={faRightToBracket} />
               </Button>
             </Col>
           </>
@@ -1076,7 +1076,7 @@ function Tags() {
                                     />
                                   </Col>
                                   <Col
-                                    xs={2}
+                                    xs={4}
                                     className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
                                     title={name}
                                   >
@@ -1115,7 +1115,7 @@ function Tags() {
                                       }}
                                     />
                                   </Col>
-                                  <Col
+                                  {/* <Col
                                     xs={2}
                                     className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
                                     title={name}
@@ -1154,7 +1154,7 @@ function Tags() {
                                         handleBlur(tag_id)
                                       }}
                                     />
-                                  </Col>
+                                  </Col> */}
                                   <Col
                                     xs={1}
                                     className="d-flex my-auto flex-grow-1"
@@ -1400,7 +1400,7 @@ function Tags() {
                                                               />
                                                             </Col>
                                                             <Col
-                                                              xs={2}
+                                                              xs={4}
                                                               className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
                                                             >
                                                               <Form.Control
@@ -1472,7 +1472,7 @@ function Tags() {
                                                                 }}
                                                               />
                                                             </Col>
-                                                            <Col
+                                                            {/* <Col
                                                               xs={2}
                                                               className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
                                                             >
@@ -1544,7 +1544,7 @@ function Tags() {
                                                                   )
                                                                 }}
                                                               />
-                                                            </Col>
+                                                            </Col> */}
                                                             <Col
                                                               xs={1}
                                                               className="d-flex my-auto flex-grow-1"

@@ -156,6 +156,7 @@ function Home() {
     const { user } = await apiServices.me()
     setAuth({
       authed: true,
+      nav: true,
       ...user,
     })
   }
