@@ -19,6 +19,7 @@ import {
   faCompass,
   faEnvelope,
   faFeatherPointed,
+  faFileArrowUp,
   faFilePen,
   faFilm,
   faFolder,
@@ -54,6 +55,8 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Context, AuthContext } from './ContextProvider'
 import IFrameContainer from './IFrameContainer'
 import ImgWithFunc from './ImgWithFuncs'
+import ApiModal from './ApiModal'
+import DataModal from './DataModal'
 
 const icons = {
   faFilePen,
@@ -714,6 +717,16 @@ function Tags() {
     })
   }
 
+  const [showApi, setshowApi] = useState(false)
+  const handleApiClose = () => {
+    setshowApi(false)
+  }
+  const [showData, setshowData] = useState(false)
+  const [showDataModal, setshowDataModal] = useState(false)
+  const handleDataClose = () => {
+    setshowDataModal(false)
+  }
+
   return (
     <Container className="d-flex flex-column pt-3 h-100">
       <Row style={{ paddingLeft: '.5rem', paddingRight: '.75rem' }}>
@@ -747,7 +760,7 @@ function Tags() {
           <>
             <Col xs={2} className="d-flex ps-0">
               <h4 className="my-auto text-aure-dark fw-bold">
-                架構管理 / 後台
+                {showData ? '數據套用模式' : '架構管理 / 後台'}
               </h4>
             </Col>
             <Col xs={2} className="d-flex">
@@ -755,7 +768,7 @@ function Tags() {
                 系統LOGO與名稱：
               </h5>
             </Col>
-            <Col className="d-flex ps-0 flex-grow-1">
+            <Col xs={1} className="d-flex ps-0 flex-grow-1">
               <ImgWithFunc
                 setting={{
                   container_id: containerId,
@@ -776,10 +789,12 @@ function Tags() {
                 }}
               />
             </Col>
-            <Col xs={2} />
-            <Col xs={3} className="d-flex pe-0 ms-auto">
+            <Col
+              xs={5}
+              className="d-flex pe-0 ms-auto text-nowrap justify-content-end"
+            >
               <Button
-                className="ms-4 w-50"
+                className="ms-1 w-25"
                 variant="outline-aure"
                 onClick={() => {
                   setContainerId('')
@@ -789,7 +804,7 @@ function Tags() {
                 <FontAwesomeIcon icon={faReply} />
               </Button>
               <Button
-                className="ms-4 w-50"
+                className="ms-2 w-25"
                 variant="outline-aure"
                 onClick={() => {
                   setshowSlide(true)
@@ -798,6 +813,38 @@ function Tags() {
                 幻燈片模式&ensp;
                 <FontAwesomeIcon icon={faClapperboard} />
               </Button>
+              {showData ? (
+                <Button
+                  className="ms-2 w-25"
+                  variant="outline-aure"
+                  onClick={() => {
+                    setshowData(false)
+                  }}
+                >
+                  一般模式
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    className="ms-2 w-25"
+                    variant="outline-aure"
+                    onClick={() => {
+                      setshowApi(true)
+                    }}
+                  >
+                    API串接設定
+                  </Button>
+                  <Button
+                    className="ms-2 w-25"
+                    variant="outline-aure"
+                    onClick={() => {
+                      setshowData(true)
+                    }}
+                  >
+                    數據套用模式
+                  </Button>
+                </>
+              )}
             </Col>
           </>
         )}
@@ -1155,52 +1202,71 @@ function Tags() {
                                       }}
                                     />
                                   </Col> */}
-                                  <Col
-                                    xs={1}
-                                    className="d-flex my-auto flex-grow-1"
-                                  >
-                                    <Button
-                                      {...dragProvided.dragHandleProps}
-                                      style={{ boxShadow: 'none' }}
-                                      variant="edit"
-                                      // onClick={() => handleDeleteClip(id)}
-                                      title="調 整 順 序"
+                                  {showData ? (
+                                    <Col
+                                      xs={1}
+                                      className="d-flex my-auto flex-grow-1"
                                     >
-                                      <FontAwesomeIcon icon={faBars} />
-                                    </Button>
-                                    <Button
-                                      className="ms-auto"
-                                      style={{ boxShadow: 'none' }}
-                                      variant="edit"
-                                      onClick={() => {
-                                        handleAddSubTag(tag_id, '新分頁', {})
-                                      }}
-                                      title="新 增"
-                                      size="sm"
+                                      <Button
+                                        className="mx-auto"
+                                        style={{ boxShadow: 'none' }}
+                                        variant="edit"
+                                        onClick={() => {
+                                          setshowDataModal(true)
+                                        }}
+                                        title="套用數據"
+                                      >
+                                        <FontAwesomeIcon icon={faFileArrowUp} />
+                                      </Button>
+                                    </Col>
+                                  ) : (
+                                    <Col
+                                      xs={1}
+                                      className="d-flex my-auto flex-grow-1"
                                     >
-                                      <FontAwesomeIcon
-                                        className="text-blue"
-                                        icon={faCirclePlus}
-                                      />
-                                    </Button>
-                                    <Button
-                                      className="ms-auto"
-                                      style={{
-                                        boxShadow: 'none',
-                                      }}
-                                      variant="edit"
-                                      onClick={() => {
-                                        handleDeleteTag(tag_id)
-                                      }}
-                                      title="刪 除"
-                                      size="sm"
-                                    >
-                                      <FontAwesomeIcon
-                                        className="text-red"
-                                        icon={faCircleMinus}
-                                      />
-                                    </Button>
-                                  </Col>
+                                      <Button
+                                        {...dragProvided.dragHandleProps}
+                                        style={{ boxShadow: 'none' }}
+                                        variant="edit"
+                                        // onClick={() => handleDeleteClip(id)}
+                                        title="調 整 順 序"
+                                      >
+                                        <FontAwesomeIcon icon={faBars} />
+                                      </Button>
+                                      <Button
+                                        className="ms-auto"
+                                        style={{ boxShadow: 'none' }}
+                                        variant="edit"
+                                        onClick={() => {
+                                          handleAddSubTag(tag_id, '新分頁', {})
+                                        }}
+                                        title="新 增"
+                                        size="sm"
+                                      >
+                                        <FontAwesomeIcon
+                                          className="text-blue"
+                                          icon={faCirclePlus}
+                                        />
+                                      </Button>
+                                      <Button
+                                        className="ms-auto"
+                                        style={{
+                                          boxShadow: 'none',
+                                        }}
+                                        variant="edit"
+                                        onClick={() => {
+                                          handleDeleteTag(tag_id)
+                                        }}
+                                        title="刪 除"
+                                        size="sm"
+                                      >
+                                        <FontAwesomeIcon
+                                          className="text-red"
+                                          icon={faCircleMinus}
+                                        />
+                                      </Button>
+                                    </Col>
+                                  )}
                                 </Row>
                                 {t.setting.subtags && (
                                   <Row>
@@ -1472,120 +1538,79 @@ function Tags() {
                                                                 }}
                                                               />
                                                             </Col>
-                                                            {/* <Col
-                                                              xs={2}
-                                                              className="my-auto text-start oneLineEllipsis fs-7 flex-grow-1"
-                                                            >
-                                                              <Form.Control
-                                                                as="textarea"
-                                                                rows={1}
-                                                                defaultValue={
-                                                                  st.setting
-                                                                    .codes &&
-                                                                  st.setting
-                                                                    .codes[1]
-                                                                    ? st.setting
-                                                                        .codes[1]
-                                                                        .code
-                                                                    : ''
-                                                                }
-                                                                placeholder="請輸入V0所生成的global.css..."
-                                                                onChange={(e) =>
-                                                                  setsortedTags(
-                                                                    sortedTags.map(
-                                                                      (
-                                                                        editingST
-                                                                      ) =>
-                                                                        editingST.tag_id ===
-                                                                        tag_id
-                                                                          ? {
-                                                                              ...editingST,
-                                                                              setting:
-                                                                                {
-                                                                                  ...editingST.setting,
-                                                                                  subtags:
-                                                                                    editingST.setting.subtags.map(
-                                                                                      (
-                                                                                        estst,
-                                                                                        k
-                                                                                      ) =>
-                                                                                        j ===
-                                                                                        k
-                                                                                          ? {
-                                                                                              ...estst,
-                                                                                              setting:
-                                                                                                {
-                                                                                                  ...estst.setting,
-                                                                                                  codes:
-                                                                                                    [
-                                                                                                      estst
-                                                                                                        .setting
-                                                                                                        .codes[0] ||
-                                                                                                        {},
-                                                                                                      {
-                                                                                                        code: e
-                                                                                                          .target
-                                                                                                          .value,
-                                                                                                      },
-                                                                                                    ],
-                                                                                                },
-                                                                                            }
-                                                                                          : estst
-                                                                                    ),
-                                                                                },
-                                                                            }
-                                                                          : editingST
-                                                                    )
-                                                                  )
-                                                                }
-                                                                onBlur={() => {
-                                                                  handleBlur(
-                                                                    tag_id
-                                                                  )
-                                                                }}
-                                                              />
-                                                            </Col> */}
                                                             <Col
                                                               xs={1}
                                                               className="d-flex my-auto flex-grow-1"
                                                             >
-                                                              <Button
-                                                                {...subdragProvided.dragHandleProps}
-                                                                style={{
-                                                                  boxShadow:
-                                                                    'none',
-                                                                }}
-                                                                variant="edit"
-                                                                // onClick={() => handleDeleteClip(id)}
-                                                                title="調 整 順 序"
-                                                              >
-                                                                <FontAwesomeIcon
-                                                                  icon={faBars}
-                                                                />
-                                                              </Button>
-                                                              <Button
-                                                                className="ms-auto"
-                                                                style={{
-                                                                  boxShadow:
-                                                                    'none',
-                                                                }}
-                                                                variant="edit"
-                                                                onClick={() => {
-                                                                  handleDeleteSubTag(
-                                                                    tag_id,
-                                                                    j
-                                                                  )
-                                                                }}
-                                                                title="刪 除"
-                                                                size="sm"
-                                                              >
-                                                                <FontAwesomeIcon
-                                                                  className="text-red"
-                                                                  icon={
-                                                                    faCircleMinus
-                                                                  }
-                                                                />
-                                                              </Button>
+                                                              {showData ? (
+                                                                <Col
+                                                                  xs={1}
+                                                                  className="d-flex my-auto flex-grow-1"
+                                                                >
+                                                                  <Button
+                                                                    className="mx-auto"
+                                                                    style={{
+                                                                      boxShadow:
+                                                                        'none',
+                                                                    }}
+                                                                    variant="edit"
+                                                                    onClick={() => {
+                                                                      setshowDataModal(
+                                                                        true
+                                                                      )
+                                                                    }}
+                                                                    title="套用數據"
+                                                                  >
+                                                                    <FontAwesomeIcon
+                                                                      icon={
+                                                                        faFileArrowUp
+                                                                      }
+                                                                    />
+                                                                  </Button>
+                                                                </Col>
+                                                              ) : (
+                                                                <>
+                                                                  <Button
+                                                                    {...subdragProvided.dragHandleProps}
+                                                                    style={{
+                                                                      boxShadow:
+                                                                        'none',
+                                                                    }}
+                                                                    variant="edit"
+                                                                    // onClick={() => handleDeleteClip(id)}
+                                                                    title="調 整 順 序"
+                                                                  >
+                                                                    <FontAwesomeIcon
+                                                                      icon={
+                                                                        faBars
+                                                                      }
+                                                                    />
+                                                                  </Button>
+                                                                  <Button
+                                                                    className="ms-auto"
+                                                                    style={{
+                                                                      boxShadow:
+                                                                        'none',
+                                                                    }}
+                                                                    variant="edit"
+                                                                    onClick={() => {
+                                                                      handleDeleteSubTag(
+                                                                        tag_id,
+                                                                        j
+                                                                      )
+                                                                    }}
+                                                                    title="刪 除"
+                                                                    size="sm"
+                                                                  >
+                                                                    <FontAwesomeIcon
+                                                                      className="text-red"
+                                                                      icon={
+                                                                        faCircleMinus
+                                                                      }
+                                                                    />
+                                                                  </Button>
+                                                                </>
+                                                              )}
                                                             </Col>
                                                           </Row>
                                                         </div>
@@ -1719,6 +1744,14 @@ function Tags() {
             defaultValue: {},
             handleClose: handleCloseEdit,
           }}
+        />
+      )}
+      {showApi && (
+        <ApiModal setting={{ show: showApi, handleClose: handleApiClose }} />
+      )}
+      {showDataModal && (
+        <DataModal
+          setting={{ show: showDataModal, handleClose: handleDataClose }}
         />
       )}
       {/* {showSlide && (
