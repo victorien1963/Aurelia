@@ -13,7 +13,7 @@ import logoX from '../asset/images/logo-x.png'
 function TopNavBar() {
   const location = useLocation()
   const navigate = useNavigate()
-  const { setAuth } = useContext(AuthContext)
+  const { auth, setAuth } = useContext(AuthContext)
 
   const isInDraft = useMemo(
     () => location.pathname.includes('book'),
@@ -45,7 +45,7 @@ function TopNavBar() {
                 }}
               >
                 <Avatar />
-                &emsp;username
+                &emsp;{auth.name || 'username'}
               </div>
             </div>
           }

@@ -5,7 +5,8 @@ const { upload } = require('../services/minio')
 const router = express.Router()
 
 router.get('/', async (req, res) => {
-    const containers = await pg.exec('any', 'SELECT * FROM containers', [])
+    const { user_id } = req.user
+    const containers = await pg.exec('any', 'SELECT * FROM containers WHERE user_id = $1', [user_id])
     return res.send(containers)
 })
 
